@@ -26,7 +26,6 @@ object NfcUtil {
                 ndef.writeNdefMessage(message)
                 ndef.close()
 
-                Toast.makeText(context, "Tag written successfully.", Toast.LENGTH_LONG).show()
                 consumer.accept(true)
             } else {
                 val format = NdefFormatable.get(tag)
@@ -36,15 +35,12 @@ object NfcUtil {
                     format.format(message)
                     format.close()
 
-                    Toast.makeText(context, "Tag written successfully.", Toast.LENGTH_LONG).show()
                     consumer.accept(true)
                 } else {
-                    Toast.makeText(context, "Tag is not NDEF formatted.", Toast.LENGTH_LONG).show()
                     consumer.accept(false)
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Failed to write tag.", Toast.LENGTH_LONG).show()
             consumer.accept(false)
         }
     }
