@@ -17,7 +17,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.indoornav.R
@@ -88,8 +90,8 @@ private fun StoreHeaderCard(navController: NavHostController) {
                     .width(45.dp)
             )
             // Add your column content here
-           // Text("Item 1", style = MaterialTheme.typography.h6, color = Color.White)
-            //Text("Item 2", style = MaterialTheme.typography.body1, color = Color.White)
+            Text("Welcome to", fontSize = 16.sp, color = Color.Black)
+            Text("", fontSize = 24.sp , color = Color.Black, fontWeight = FontWeight.Bold)
             // ... other items
         }
     }
