@@ -27,10 +27,13 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.navigation.NavController
+import com.indoornav.navigation.NavigationRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoreAndFloorSelectionScreen(
+    navController: NavController,
     storeDatabase: DatabaseReference,
     productPositionDatabase: DatabaseReference,
     productDatabase: DatabaseReference,
@@ -76,7 +79,7 @@ fun StoreAndFloorSelectionScreen(
             .padding(32.dp)
     ) {
         Column {
-
+            Spacer(modifier = Modifier.height(100.dp))
             Text(text = "Please Select Store")
             ExposedDropdownMenuBox(
                 expanded = storeDialogExpanded,
@@ -109,7 +112,7 @@ fun StoreAndFloorSelectionScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Please Select Floor")
             ExposedDropdownMenuBox(
                 expanded = floorDialogExpanded,
@@ -141,7 +144,17 @@ fun StoreAndFloorSelectionScreen(
                 }
             }
 
-            Button(onClick = {  }) {
+            Button(onClick = {
+                if (selectedStore?.storeId != null && selectedFloor?.floorId != null) {
+                    val path = NavigationRoute.STORE_ACTION_SCREEN.replace(
+                        "{storeId}",
+                        selectedStore!!.storeId.toString()
+                    ).replace("{floorId}", selectedFloor!!.floorId)
+                    navController.navigate(path)
+                } else {
+                    Toast.makeText(context, "Please Select Store and Floor", Toast.LENGTH_SHORT).show()
+                }
+            }) {
                 Text(text = "Go")
             }
 

@@ -1,12 +1,18 @@
 package com.indoornav.navigation
 
+import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.firebase.database.DatabaseReference
+import com.indoornav.business.store.StoreActionOptionsScreen
 import com.indoornav.business.store.StoreAndFloorSelectionScreen
+import com.indoornav.business.store.actions.AddProductScreen
+import com.indoornav.business.store.actions.MapProductToTagScreen
+import com.indoornav.business.store.actions.MapTagToRack
 import com.indoornav.ui.screens.FloorPlanScreen
 import com.indoornav.ui.screens.HomeScreen
 
@@ -41,11 +47,60 @@ fun NavigationGraph(
             deepLinks = listOf(NavDeepLink(NavigationRoute.SELECT_STORE))
         ) {
             StoreAndFloorSelectionScreen(
+                navController,
                 storeDatabase,
                 productPositionDatabase,
                 productDatabase,
                 tagMappingDatabase
             )
+        }
+
+        composable(
+            route = NavigationRoute.STORE_ACTION_SCREEN,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.STORE_ACTION_SCREEN)),
+            arguments = listOf(
+                navArgument("storeId") { defaultValue = "" },
+                navArgument("floorId") { defaultValue = "" }
+            ),
+            enterTransition = { EnterTransition.None }
+        ) {
+            StoreActionOptionsScreen(navController, it.arguments?.getString("storeId")!!, it.arguments!!.getString("floorId")!!)
+        }
+
+        composable(
+            route = NavigationRoute.STORE_MAP_PRODUCT_TO_TAG_SCREEN,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.STORE_MAP_PRODUCT_TO_TAG_SCREEN)),
+            arguments = listOf(
+                navArgument("storeId") { defaultValue = "" },
+                navArgument("floorId") { defaultValue = "" }
+            ),
+            enterTransition = { EnterTransition.None }
+        ) {
+            MapProductToTagScreen(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+        }
+
+        composable(
+            route = NavigationRoute.STORE_ADD_PRODUCT_SCREEN,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.STORE_ADD_PRODUCT_SCREEN)),
+            arguments = listOf(
+                navArgument("storeId") { defaultValue = "" },
+                navArgument("floorId") { defaultValue = "" }
+            ),
+            enterTransition = { EnterTransition.None }
+        ) {
+            AddProductScreen(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+        }
+
+        composable(
+            route = NavigationRoute.STORE_MAP_TAG_TO_RACK_SCREEN,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.STORE_MAP_TAG_TO_RACK_SCREEN)),
+            arguments = listOf(
+                navArgument("storeId") { defaultValue = "" },
+                navArgument("floorId") { defaultValue = "" }
+            ),
+            enterTransition = { EnterTransition.None }
+        ) {
+            MapTagToRack(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
     }
 }
