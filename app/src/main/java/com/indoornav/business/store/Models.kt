@@ -1,5 +1,7 @@
 package com.indoornav.business.store
 
+import java.util.Objects
+
 
 const val GRID = "grid"
 const val TAG = "FireBaseScreen"
@@ -16,7 +18,8 @@ data class Coordinate(val rowId: Int, val colId: Int)
 data class Store(
     val storeId: String? = null,
     val name: String? = null,
-    val address: String? = null
+    val address: String? = null,
+    val floorPlan: HashMap<String, Object>? = null
 )
 data class Rack(
     val coordinate: Coordinate,
