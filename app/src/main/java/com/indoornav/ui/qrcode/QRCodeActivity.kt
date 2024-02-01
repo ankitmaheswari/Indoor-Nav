@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -43,7 +42,7 @@ class QRCodeActivity : ComponentActivity() {
             IndoorNavTheme {
                 val context = LocalContext.current
 
-                var barcodeTextResult by remember {
+                var qrData by remember {
                     mutableStateOf("")
                 }
 
@@ -62,7 +61,7 @@ class QRCodeActivity : ComponentActivity() {
                         hasCameraPermission = granted
                         if (granted == true) {
                             startScanning() { result ->
-                                barcodeTextResult = result.barcodeFormatString+": "+result.barcodeText
+                                qrData = result.barcodeFormatString+": "+result.barcodeText
                             }
                             mCameraEnhancer.open()
                         }
@@ -87,17 +86,17 @@ class QRCodeActivity : ComponentActivity() {
                         mCameraEnhancer.cameraView = mCameraView
                         mCameraView
                     })
-                    BarcodeText(text = barcodeTextResult)
-                    if (barcodeTextResult.isNotEmpty()){
-                        closeActivity()
+                    BarcodeText(text = qrData)
+                    if (qrData.isNotEmpty()){
+                        closeActivity(qrData)
                     }
                 }
             }
         }
     }
 
-    private fun closeActivity(){
-        setResult(RESULT_OK, Intent().putExtra("result", "Activity Result"))
+    private fun closeActivity(qrData: String) {
+        setResult(RESULT_OK, Intent().putExtra("result",qrData ))
 
         // Finish the activity after setting the result
         finish()

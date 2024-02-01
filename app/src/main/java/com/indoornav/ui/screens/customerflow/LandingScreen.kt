@@ -41,14 +41,14 @@ import com.indoornav.ui.qrcode.QRCodeActivity
 
 @Composable
  fun LandingScreen(navController: NavHostController) {
-    var result by remember { mutableStateOf<String?>(null) }
+    var qrData by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
         if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
-            result = activityResult.data?.getStringExtra("result")
-            navController.navigate("${NavigationRoute.CUSTOMER_STORE_SCREEN}/$result")
+            qrData = activityResult.data?.getStringExtra("result")
+            navController.navigate(NavigationRoute.CUSTOMER_STORE_SCREEN.replace("{QR_DATA}",qrData?:""))
         }
     }
 
