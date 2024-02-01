@@ -8,6 +8,6 @@ class NavigationRoute {
         const val STORE_ADD_PRODUCT_SCREEN = "store/addproduct/{storeId}/{floorId}"
         const val STORE_MAP_PRODUCT_TO_TAG_SCREEN = "store/mapproducttotag/{storeId}/{floorId}"
         const val SELECT_STORE = "home/store"
-        const val FLOOR_PLAN = "home/plan"
+        const val FLOOR_PLAN = "home/plan/{storeId}/{floorId}"
     }
 }

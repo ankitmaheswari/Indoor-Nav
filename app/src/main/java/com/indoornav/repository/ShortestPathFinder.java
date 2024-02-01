@@ -7,17 +7,32 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-class ShortestPathFinder {
+public class ShortestPathFinder {
 
-    private int[][] layoutPlan;
+    private final int[][] layoutPlan;
 
-    ShortestPathFinder(int[][] layoutPlan) {
-        this.layoutPlan = layoutPlan;
+    public ShortestPathFinder(ArrayList<ArrayList<Integer>> layoutPlan) {
+        int[][] plan = new int[layoutPlan.size()][layoutPlan.get(0).size()];
+        for (int r = 0; r < layoutPlan.size(); r++) {
+            for (int c = 0; c < layoutPlan.get(0).size(); c++) {
+                plan[r][c] = layoutPlan.get(r).get(c);
+            }
+        }
+        this.layoutPlan = plan;
     }
 
 
-    int[][] findOptimalPath(int[] start, int[] end) {
-        return aStarSearch(layoutPlan, start, end, layoutPlan.length, layoutPlan[0].length);
+    public ArrayList<ArrayList<Integer>> findOptimalPath(int[] start, int[] end) {
+         int[][] result = aStarSearch(layoutPlan, start, end, layoutPlan.length, layoutPlan[0].length);
+         ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+         for (int r = 0; r < result.length; r++) {
+             ArrayList l = new ArrayList();
+             for (int c = 0; c < result[0].length; c++) {
+                 l.add(result[r][c]);
+             }
+             list.add(l);
+         }
+         return list;
     }
 
 
@@ -39,7 +54,7 @@ class ShortestPathFinder {
     }
 
     private static boolean isUnBlocked(int[][] grid, int row, int col) {
-        return grid[row][col] == 1;
+        return grid[row][col] == 0;
     }
 
     private static boolean isDestination(int row, int col, int[] dest) {
@@ -52,7 +67,6 @@ class ShortestPathFinder {
 
     private static int[][] tracePath(Cell[][] cellDetails, int[] dest) {
         System.out.println("The Path is ");
-        int result[][] = new int[cellDetails.length][2];
         int row = dest[0];
         int col = dest[1];
 
@@ -69,6 +83,7 @@ class ShortestPathFinder {
         path.put(new int[]{row, col}, true);
         List<int[]> pathList = new ArrayList<>(path.keySet());
         Collections.reverse(pathList);
+        int result[][] = new int[pathList.size()][2];
 
         final int[] i = {0};
         pathList.forEach(p -> {
@@ -243,15 +258,15 @@ class ShortestPathFinder {
                 }
             }
 
-            // 5th Successor (North-East)
+            /*// 5th Successor (North-East)
             if (isValid(row, col, i - 1, j + 1)) {
                 if (isDestination(i - 1, j + 1, dest)) {
                     cellDetails[i - 1][j + 1].parent_i = i;
                     cellDetails[i - 1][j + 1].parent_j = j;
                     System.out.println("The destination cell is found");
                     return tracePath(cellDetails, dest);
-                    /*foundDest = true;
-                    return;*/
+                    *//*foundDest = true;
+                    return;*//*
                 } else if (!closedList[i - 1][j + 1] && isUnBlocked(grid, i - 1, j + 1)) {
                     gNew = cellDetails[i][j].g + 1.414;
                     hNew = calculateHValue(i - 1, j + 1, dest);
@@ -276,8 +291,8 @@ class ShortestPathFinder {
                     cellDetails[i - 1][j - 1].parent_j = j;
                     System.out.println("The destination cell is found");
                     return tracePath(cellDetails, dest);
-                    /*foundDest = true;
-                    return;*/
+                    *//*foundDest = true;
+                    return;*//*
                 } else if (!closedList[i - 1][j - 1] && isUnBlocked(grid, i - 1, j - 1)) {
                     gNew = cellDetails[i][j].g + 1.414;
                     hNew = calculateHValue(i - 1, j - 1, dest);
@@ -302,8 +317,8 @@ class ShortestPathFinder {
                     cellDetails[i + 1][j + 1].parent_j = j;
                     System.out.println("The destination cell is found");
                     return tracePath(cellDetails, dest);
-                    /*foundDest = true;
-                    return;*/
+                    *//*foundDest = true;
+                    return;*//*
                 } else if (!closedList[i + 1][j + 1] && isUnBlocked(grid, i + 1, j + 1)) {
                     gNew = cellDetails[i][j].g + 1.414;
                     hNew = calculateHValue(i + 1, j + 1, dest);
@@ -328,8 +343,8 @@ class ShortestPathFinder {
                     cellDetails[i + 1][j - 1].parent_j = j;
                     System.out.println("The destination cell is found");
                     return tracePath(cellDetails, dest);
-                    /*foundDest = true;
-                    return;*/
+                    *//*foundDest = true;
+                    return;*//*
                 } else if (!closedList[i + 1][j - 1] && isUnBlocked(grid, i + 1, j - 1)) {
                     gNew = cellDetails[i][j].g + 1.414;
                     hNew = calculateHValue(i + 1, j - 1, dest);
@@ -345,7 +360,7 @@ class ShortestPathFinder {
                         cellDetails[i + 1][j - 1].parent_j = j;
                     }
                 }
-            }
+            }*/
         }
 
         if (!foundDest)

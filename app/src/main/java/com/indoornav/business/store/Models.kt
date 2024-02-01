@@ -54,3 +54,9 @@ data class Product(
     val mrpInPaisa: Int,
     val category: String,
 )
+
+data class ProductWithPosition(
+    val product: Product,
+    val productWithPosition: ProductPosition,
+    val tagMapping: TagMapping
+)

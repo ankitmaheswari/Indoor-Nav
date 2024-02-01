@@ -4,6 +4,7 @@ import android.nfc.Tag
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,8 +16,10 @@ import com.indoornav.business.store.StoreAndFloorSelectionScreen
 import com.indoornav.business.store.actions.AddProductScreen
 import com.indoornav.business.store.actions.MapProductToTagScreen
 import com.indoornav.business.store.actions.MapTagToRackScreen
+import com.indoornav.repository.StoreRepository
 import com.indoornav.ui.screens.FloorPlanScreen
 import com.indoornav.ui.screens.HomeScreen
+import com.indoornav.vm.FloorPlanViewModel
 
 @Composable
 fun NavigationGraph(
@@ -40,9 +43,25 @@ fun NavigationGraph(
 
         composable(
             route = NavigationRoute.FLOOR_PLAN,
-            deepLinks = listOf(NavDeepLink(NavigationRoute.FLOOR_PLAN))
+            deepLinks = listOf(NavDeepLink(NavigationRoute.FLOOR_PLAN)),
+            arguments = listOf(
+                navArgument("storeId") { defaultValue = "" },
+                navArgument("floorId") { defaultValue = "" },
+                navArgument("productId") { defaultValue = "" },
+                navArgument("startX") { defaultValue = 0 },
+                navArgument("startY") { defaultValue = 0 },
+            ),
+            enterTransition = { EnterTransition.None }
         ) {
-            FloorPlanScreen()
+            val vm: FloorPlanViewModel = viewModel()
+            FloorPlanScreen(
+                vm,
+                it.arguments?.getString("storeId")!!,
+                it.arguments!!.getString("floorId")!!,
+                it.arguments!!.getString("productId")!!,
+                it.arguments!!.getInt("startX"),
+                it.arguments!!.getInt("startY")
+            )
         }
 
         composable(
