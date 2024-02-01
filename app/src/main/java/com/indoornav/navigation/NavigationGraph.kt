@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDeepLink
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +23,8 @@ import com.indoornav.business.store.actions.MapProductToTagScreen
 import com.indoornav.business.store.actions.MapTagToRackScreen
 import com.indoornav.ui.screens.FloorPlanScreen
 import com.indoornav.ui.screens.HomeScreen
+import com.indoornav.ui.screens.customerflow.CustomerStoreScreen
+import com.indoornav.ui.screens.customerflow.LandingScreen
 
 @Composable
 fun NavigationGraph(
@@ -42,9 +45,15 @@ fun NavigationGraph(
     ) {
         composable(
             route = NavigationRoute.HOME,
-            deepLinks = listOf(NavDeepLink(NavigationRoute.HOME))
+            deepLinks = listOf(NavDeepLink(NavigationRoute.LANDING_SCREEN))
         ) {
             HomeScreen(navController)
+        }
+        composable(
+            route = NavigationRoute.LANDING_SCREEN,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.LANDING_SCREEN))
+        ) {
+            LandingScreen(navController)
         }
 
         composable(
@@ -53,6 +62,16 @@ fun NavigationGraph(
         ) {
             FloorPlanScreen()
         }
+
+        composable(
+            route = NavigationRoute.CUSTOMER_STORE_SCREEN,
+            arguments = listOf(navArgument(NavigationRoute.QR_DATA) { type = NavType.StringType }),
+            deepLinks = listOf(NavDeepLink(NavigationRoute.CUSTOMER_STORE_SCREEN))
+        ) {
+            CustomerStoreScreen(navController)
+        }
+
+
 
         composable(
             route = NavigationRoute.CREATE_STORE,

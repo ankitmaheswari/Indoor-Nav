@@ -51,7 +51,7 @@ fun HomeScreen(navController: NavController) {
                 Button(
                     modifier = Modifier.padding(16.dp),
                     onClick = {
-                        navController.navigate(NavigationRoute.FLOOR_PLAN)
+                        navController.navigate(NavigationRoute.LANDING_SCREEN)
                     }
                 ) {
                     Text(text = "Customer Flow")
