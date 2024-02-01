@@ -171,6 +171,13 @@ fun StoreAndFloorSelectionScreen(
                     Text(text = "Go")
                 }
 
+                Spacer(modifier = Modifier.height(100.dp))
+                Button(onClick = {
+                    navController.navigate(NavigationRoute.CREATE_STORE)
+                }) {
+                    Text(text = "Add New Store")
+                }
+
 
             }
         }

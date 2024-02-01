@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.database.DatabaseReference
+import com.indoornav.business.store.AddNewStoreScreen
 import com.indoornav.business.store.StoreActionOptionsScreen
 import com.indoornav.business.store.StoreAndFloorSelectionScreen
 import com.indoornav.business.store.actions.AddProductScreen
@@ -43,6 +44,13 @@ fun NavigationGraph(
             deepLinks = listOf(NavDeepLink(NavigationRoute.FLOOR_PLAN))
         ) {
             FloorPlanScreen()
+        }
+
+        composable(
+            route = NavigationRoute.CREATE_STORE,
+            deepLinks = listOf(NavDeepLink(NavigationRoute.CREATE_STORE))
+        ) {
+            AddNewStoreScreen(navController, storeDatabase)
         }
 
         composable(
