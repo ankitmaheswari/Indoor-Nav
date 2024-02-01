@@ -79,7 +79,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            MapProductToTagScreen(navController, tag, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+            MapProductToTagScreen(navController, tag, productDatabase, productPositionDatabase, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
 
         composable(

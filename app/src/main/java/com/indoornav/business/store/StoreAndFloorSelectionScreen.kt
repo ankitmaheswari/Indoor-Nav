@@ -117,7 +117,6 @@ fun StoreAndFloorSelectionScreen(
                                 onClick = {
                                     selectedStore = item
                                     storeDialogExpanded = false
-                                    Toast.makeText(context, item.name, Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }

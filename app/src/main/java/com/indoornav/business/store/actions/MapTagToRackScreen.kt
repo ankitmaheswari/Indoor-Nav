@@ -1,6 +1,7 @@
 package com.indoornav.business.store.actions
 
 import android.nfc.Tag
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +46,12 @@ fun MapTagToRackScreen(
 ) {
     val context = LocalContext.current
     var rackId by remember { mutableStateOf("") }
+
+    DisposableEffect(effect = {
+        onDispose {
+            tag.value = null
+        }
+    }, key1 = tag.value)
 
     Scaffold(
         modifier = Modifier
@@ -89,13 +97,15 @@ fun MapTagToRackScreen(
                         storeId, floorId, rackId,
                         "NFC", "EMPTY"
                     )
-                    NfcUtil.writeOnTag(tag.value, tagMapping.tagId, context) {
+                    NfcUtil.writeOnTag(tag.value, """
+                       { "tagId" : ${tagMapping.tagId} }
+                    """.trimIndent(), context) {
                         if (it) {
                             tagMappingDatabase.child(tagMapping.tagId).setValue(tagMapping)
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         context,
-                                        "Tag mapped tp rack Successfully!",
+                                        "Tag mapped to rack Successfully!",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     navController.popBackStack()
