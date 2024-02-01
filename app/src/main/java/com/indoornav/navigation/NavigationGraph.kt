@@ -1,7 +1,9 @@
 package com.indoornav.navigation
 
+import android.nfc.Tag
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +14,7 @@ import com.indoornav.business.store.StoreActionOptionsScreen
 import com.indoornav.business.store.StoreAndFloorSelectionScreen
 import com.indoornav.business.store.actions.AddProductScreen
 import com.indoornav.business.store.actions.MapProductToTagScreen
-import com.indoornav.business.store.actions.MapTagToRack
+import com.indoornav.business.store.actions.MapTagToRackScreen
 import com.indoornav.ui.screens.FloorPlanScreen
 import com.indoornav.ui.screens.HomeScreen
 
@@ -22,6 +24,7 @@ fun NavigationGraph(
     productDatabase: DatabaseReference,
     productPositionDatabase: DatabaseReference,
     tagMappingDatabase: DatabaseReference,
+    tag: MutableState<Tag?>,
 ) {
     val navController = rememberNavController()
 
@@ -76,7 +79,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            MapProductToTagScreen(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+            MapProductToTagScreen(navController, tag, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
 
         composable(
@@ -100,7 +103,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            MapTagToRack(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+            MapTagToRackScreen(navController, tag, tagMappingDatabase, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
     }
 }
