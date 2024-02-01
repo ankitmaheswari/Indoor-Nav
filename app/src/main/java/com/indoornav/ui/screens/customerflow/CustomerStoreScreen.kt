@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -135,7 +136,14 @@ fun CustomerStoreScreen(
         },
         bottomBar = {
             Footer {
-                navController.popBackStack()
+                if (selectedProductId == null) {
+                    return@Footer
+                }
+               navController.navigate(NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
+                   .replace("{floorId}", qrResponse!!.floorId)
+                   .replace("{productId}", selectedProductId.toString())
+                   .replace("{row}", qrResponse!!.cord.rowId.toString())
+                   .replace("{col}", qrResponse!!.cord.colId.toString()))
             }
         }) { outerPadding ->
         LazyColumn(
@@ -175,7 +183,8 @@ fun CustomerStoreScreen(
 private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         // PNG image as the background
         Image(
@@ -224,7 +233,7 @@ private fun Footer(onClick: () -> Unit) {
             .background(
                 color = Color.Green,
                 shape = RoundedCornerShape(8.dp)
-            )
+            ).fillMaxWidth()
             .clickable { onClick() }
             .padding(
                 horizontal = 12.dp,
