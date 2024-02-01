@@ -36,10 +36,8 @@ class FloorPlanViewModel: ViewModel() {
         }
     }
 
-    fun getProductDetails(productId: String, storeId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            storeRepository.getProductDetails(storeId, productId)
-        }
+    fun getProductDetails(productId: String, storeId: String): Product? {
+        return productDetails?.product
     }
 
     fun getShortestPath(start: Array<Int>, productId: String, storeId: String) {

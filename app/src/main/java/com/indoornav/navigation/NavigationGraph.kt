@@ -66,8 +66,8 @@ fun NavigationGraph(
                 navArgument("storeId") { defaultValue = "" },
                 navArgument("floorId") { defaultValue = "" },
                 navArgument("productId") { defaultValue = "" },
-                navArgument("startX") { defaultValue = 0 },
-                navArgument("startY") { defaultValue = 0 },
+                navArgument("row") { defaultValue = 0 },
+                navArgument("column") { defaultValue = 0 },
             ),
             enterTransition = { EnterTransition.None }
         ) {
