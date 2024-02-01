@@ -34,10 +34,10 @@ fun HomeScreen(navController: NavController) {
         }
     ) {
         Box(
-            modifier = Modifier.padding(it)
+            modifier = Modifier.fillMaxSize().padding(it)
         ) {
 
-            Column(modifier = Modifier.align(Alignment.Center)) {
+            Column(modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -51,7 +51,12 @@ fun HomeScreen(navController: NavController) {
                 Button(
                     modifier = Modifier.padding(16.dp),
                     onClick = {
-                        navController.navigate(NavigationRoute.LANDING_SCREEN)
+                        navController.navigate(NavigationRoute.FLOOR_PLAN.replace(
+                            "{storeId}",
+                            "d3fd16e4-9865-4b6b-b536-8020c9ae5a9b"
+                        ).replace("{floorId}", "77d76590-e0da-406b-9818-52d938ceca02"))
+
+                        //navController.navigate(NavigationRoute.LANDING_SCREEN)
                     }
                 ) {
                     Text(text = "Customer Flow")
