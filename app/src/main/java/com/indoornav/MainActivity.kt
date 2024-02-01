@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+
         val storeDatabase = Firebase.database.getReference(STORES)
         val productDatabase = Firebase.database.getReference(PRODUCT)
         val productPositionDatabase = Firebase.database.getReference(PRODUCT_POSITION)
