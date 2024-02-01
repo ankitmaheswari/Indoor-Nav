@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.sqrt
 
 class DistanceActivity : ComponentActivity(), SensorEventListener {
     private val TAG = "Distance_Tracker"
@@ -32,6 +33,7 @@ class DistanceActivity : ComponentActivity(), SensorEventListener {
     private var lastAcceleration = 0f
     private var job: Job? = null
     private var distance: MutableStateFlow<Float> = MutableStateFlow(0f)
+    private var lastUpdateTimestamp = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +70,10 @@ class DistanceActivity : ComponentActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
+        calculateDistanceMethod1(event)
+    }
+
+    private fun calculateDistanceMethod1(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER && isCalculatingDistance) {
             val acceleration = event.values[0] + event.values[1] + event.values[2]
             val deltaAcceleration = acceleration - lastAcceleration
@@ -78,6 +84,30 @@ class DistanceActivity : ComponentActivity(), SensorEventListener {
             lastAcceleration = acceleration
             Log.d(TAG, distanceWalked.toString())
         }
+    }
+
+    private fun calculateDistanceMethod2(event: SensorEvent?) {
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            val x = event.values[0]
+            val y = event.values[1]
+            val z = event.values[2]
+            val samplingTime = (event.timestamp - lastUpdateTimestamp) / 1000000000f
+            lastUpdateTimestamp = event.timestamp
+            val d = calculateDistance(event.values, samplingTime)
+            CoroutineScope(Dispatchers.Default).launch {
+                distance.emit(d)
+            }
+        }
+    }
+
+    private fun calculateDistance(values: FloatArray, samplingTime: Float): Float {
+        var distance = 0f
+        for (i in 0 until values.size step 3) {
+            val accelerationMagnitude =
+                sqrt(values[i] * values[i] + values[i + 1] * values[i + 1] + values[i + 2] * values[i + 2])
+            distance += accelerationMagnitude * samplingTime * samplingTime / 2
+        }
+        return distance
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {

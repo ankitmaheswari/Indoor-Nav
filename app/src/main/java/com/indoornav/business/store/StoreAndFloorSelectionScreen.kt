@@ -3,8 +3,12 @@ package com.indoornav.business.store
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -21,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.getValue
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -40,8 +43,13 @@ fun StoreAndFloorSelectionScreen(
     val storesList by remember {
         mutableStateOf(arrayListOf<Store>())
     }
-    var expanded by remember { mutableStateOf(false) }
+    val floorsList by remember {
+        mutableStateOf(arrayListOf<FloorPlan>())
+    }
+    var storeDialogExpanded by remember { mutableStateOf(false) }
+    var floorDialogExpanded by remember { mutableStateOf(false) }
     var selectedStore: Store? by remember { mutableStateOf(null) }
+    var selectedFloor: FloorPlan? by remember { mutableStateOf(null) }
 
     LaunchedEffect(key1 = storeDatabase, block = {
 
@@ -54,40 +62,91 @@ fun StoreAndFloorSelectionScreen(
         }
     })
 
+    LaunchedEffect(key1 = selectedStore, block = {
+        selectedStore?.let {
+            floorsList.clear()
+            val floorPlanListType = object : TypeToken<List<FloorPlan>>() {}.type
+            floorsList.addAll(gson.fromJson<List<FloorPlan>>(gson.toJson(it.floorPlan!!.values), floorPlanListType))
+        }
+    })
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(32.dp)
     ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            }
-        ) {
-            TextField(
-                value = selectedStore?.name ?: "Please Select Store",
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor()
-            )
+        Column {
 
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+            Text(text = "Please Select Store")
+            ExposedDropdownMenuBox(
+                expanded = storeDialogExpanded,
+                onExpandedChange = {
+                    storeDialogExpanded = !storeDialogExpanded
+                }
             ) {
-                storesList.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item?.name ?: "" ) },
-                        onClick = {
-                            selectedStore = item
-                            expanded = false
-                            Toast.makeText(context, item.name, Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                TextField(
+                    value = selectedStore?.name ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = storeDialogExpanded) },
+                    modifier = Modifier.menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = storeDialogExpanded,
+                    onDismissRequest = { storeDialogExpanded = false }
+                ) {
+                    storesList.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item?.name ?: "") },
+                            onClick = {
+                                selectedStore = item
+                                storeDialogExpanded = false
+                                Toast.makeText(context, item.name, Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(100.dp))
+            Text(text = "Please Select Floor")
+            ExposedDropdownMenuBox(
+                expanded = floorDialogExpanded,
+                onExpandedChange = {
+                    floorDialogExpanded = !floorDialogExpanded
+                }
+            ) {
+                TextField(
+                    value = selectedFloor?.floorNumber?.toString() ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = floorDialogExpanded) },
+                    modifier = Modifier.menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = floorDialogExpanded,
+                    onDismissRequest = { floorDialogExpanded = false }
+                ) {
+                    floorsList.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item?.floorNumber.toString() ?: "") },
+                            onClick = {
+                                selectedFloor = item
+                                floorDialogExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Button(onClick = {  }) {
+                Text(text = "Go")
+            }
+
+
         }
+
     }
 }
