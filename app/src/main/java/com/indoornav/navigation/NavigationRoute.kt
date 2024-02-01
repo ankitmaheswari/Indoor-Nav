@@ -9,5 +9,11 @@ class NavigationRoute {
         const val STORE_MAP_PRODUCT_TO_TAG_SCREEN = "store/mapproducttotag/{storeId}/{floorId}"
         const val SELECT_STORE = "home/store"
         const val FLOOR_PLAN = "home/plan/{storeId}/{floorId}"
+        const val LANDING_SCREEN = "home/landing"
+        const val CUSTOMER_STORE_SCREEN = "home/customer_store/{QR_DATA}"
+
+        //Argumnets
+        const val QR_DATA = "QR_DATA"
+        const val CREATE_STORE = "store/create"
     }
 }

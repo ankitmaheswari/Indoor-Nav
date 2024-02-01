@@ -55,6 +55,8 @@ fun HomeScreen(navController: NavController) {
                             "{storeId}",
                             "d3fd16e4-9865-4b6b-b536-8020c9ae5a9b"
                         ).replace("{floorId}", "77d76590-e0da-406b-9818-52d938ceca02"))
+
+                        //navController.navigate(NavigationRoute.LANDING_SCREEN)
                     }
                 ) {
                     Text(text = "Customer Flow")
