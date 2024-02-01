@@ -49,7 +49,13 @@ class FloorPlanViewModel: ViewModel() {
             productWithPosition.collectLatest {productInfo ->
                 if (productInfo != null) {
                     val rackId = productInfo.tagMapping.rackId
-                    val dest: Array<Int> = arrayOf(rackId[0].toInt(), rackId[1].toInt())
+                    val rackRow = rackId[0].digitToInt()
+                    val rackColumn = rackId[1].digitToInt()
+                    val dest: Array<Int> = if (!hasShelf(rackRow, rackColumn-1)) {
+                        arrayOf(rackRow, rackColumn-1)
+                    } else {
+                        arrayOf(rackRow, rackColumn+1)
+                    }
                     val arrayList = ArrayList<ArrayList<Int>>()
                     floorPlan?.forEach {
                         val list = ArrayList<Int>()
