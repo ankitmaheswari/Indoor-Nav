@@ -3,10 +3,12 @@ package com.indoornav.ui.screens.customerflow
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +40,9 @@ import androidx.navigation.NavHostController
 import com.indoornav.R
 import com.indoornav.navigation.NavigationRoute
 import com.indoornav.ui.qrcode.QRCodeActivity
+import com.indoornav.util.StringUtil
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
  fun LandingScreen(navController: NavHostController) {
     var qrData by remember { mutableStateOf<String?>(null) }
@@ -48,7 +52,9 @@ import com.indoornav.ui.qrcode.QRCodeActivity
         contract = ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
         if (activityResult.resultCode == ComponentActivity.RESULT_OK) {
             qrData = activityResult.data?.getStringExtra("result")
-            navController.navigate(NavigationRoute.CUSTOMER_STORE_SCREEN.replace("{QR_DATA}",qrData?:""))
+            val base64 = StringUtil.getBase64EncodedString(qrData)
+            val navigationRoute = NavigationRoute.CUSTOMER_STORE_SCREEN.replace("{QR_DATA}",base64 ?:"")
+            navController.navigate(navigationRoute)
         }
     }
 

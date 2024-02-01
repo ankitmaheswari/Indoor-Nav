@@ -1,6 +1,7 @@
 package com.indoornav.navigation
 
 import android.nfc.Tag
+import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -86,7 +87,9 @@ fun NavigationGraph(
             arguments = listOf(navArgument(NavigationRoute.QR_DATA) { type = NavType.StringType }),
             deepLinks = listOf(NavDeepLink(NavigationRoute.CUSTOMER_STORE_SCREEN))
         ) {
-            CustomerStoreScreen(navController, gson, storeDatabase, productDatabase)
+            val qrValue = it?.arguments?.getString(NavigationRoute.QR_DATA)
+            Log.d("CustomerStoreScreen qrvalue", qrValue.toString())
+            CustomerStoreScreen(navController, gson, storeDatabase, productDatabase, qrValue!!)
         }
 
 
