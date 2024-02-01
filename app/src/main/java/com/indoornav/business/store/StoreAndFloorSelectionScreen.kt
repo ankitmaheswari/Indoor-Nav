@@ -57,15 +57,14 @@ import com.indoornav.navigation.NavigationRoute
 @Composable
 fun StoreAndFloorSelectionScreen(
     navController: NavController,
+    gson: Gson,
     storeDatabase: DatabaseReference,
     productPositionDatabase: DatabaseReference,
     productDatabase: DatabaseReference,
     tagMappingDatabase: DatabaseReference
 ) {
     val context = LocalContext.current
-    val gson by remember {
-        mutableStateOf(Gson())
-    }
+
     val storesList by remember {
         mutableStateOf(arrayListOf<Store>())
     }
@@ -96,17 +95,10 @@ fun StoreAndFloorSelectionScreen(
         }
     })
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        topBar = {
-            TopAppBar(title = { Text(text = "Select Store and Floor Number") })
-        }
-    ) {
+
         Box(
             modifier = Modifier
-                .padding(it)
+
                 .fillMaxWidth(),
         ) {
 
@@ -223,6 +215,6 @@ fun StoreAndFloorSelectionScreen(
 
 
             }
-        }
+
     }
 }

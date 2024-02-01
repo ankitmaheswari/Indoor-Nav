@@ -4,12 +4,16 @@ import android.nfc.Tag
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.database.DatabaseReference
+import com.google.gson.Gson
 import com.indoornav.business.store.AddNewStoreScreen
 import com.indoornav.business.store.StoreActionOptionsScreen
 import com.indoornav.business.store.StoreAndFloorSelectionScreen
@@ -28,6 +32,10 @@ fun NavigationGraph(
     tag: MutableState<Tag?>,
 ) {
     val navController = rememberNavController()
+
+    val gson by remember {
+        mutableStateOf(Gson())
+    }
 
     NavHost(navController = navController,
         startDestination = NavigationRoute.HOME
@@ -59,6 +67,7 @@ fun NavigationGraph(
         ) {
             StoreAndFloorSelectionScreen(
                 navController,
+                gson,
                 storeDatabase,
                 productPositionDatabase,
                 productDatabase,
@@ -75,7 +84,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            StoreActionOptionsScreen(navController, storeDatabase, it.arguments?.getString("storeId")!!, it.arguments!!.getString("floorId")!!)
+            StoreActionOptionsScreen(navController, gson, storeDatabase, it.arguments?.getString("storeId")!!, it.arguments!!.getString("floorId")!!)
         }
 
         composable(
@@ -111,7 +120,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            MapTagToRackScreen(navController, tag, tagMappingDatabase, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+            MapTagToRackScreen(navController, tag, gson, storeDatabase, tagMappingDatabase, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
     }
 }
