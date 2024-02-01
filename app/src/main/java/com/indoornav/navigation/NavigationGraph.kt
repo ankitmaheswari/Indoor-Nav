@@ -68,7 +68,7 @@ fun NavigationGraph(
             arguments = listOf(navArgument(NavigationRoute.QR_DATA) { type = NavType.StringType }),
             deepLinks = listOf(NavDeepLink(NavigationRoute.CUSTOMER_STORE_SCREEN))
         ) {
-            CustomerStoreScreen(navController)
+            CustomerStoreScreen(navController, gson, storeDatabase, productDatabase)
         }
 
 
