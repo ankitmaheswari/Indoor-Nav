@@ -261,14 +261,18 @@ private fun Footer(onClick: () -> Unit) {
 
 @Composable
 private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit) {
+    val isSelected by remember { mutableStateOf(false) }
     Row {
         Image(painter = painterResource(id = R.drawable.burger), contentDescription = null)
         Column {
             Text(text = product.name)
             Text(text = "₹ ${product.mrpInPaisa}")
         }
-        RadioButton(selected = false, onClick = {
-            onProductSelected(product.productId)
+        RadioButton(selected = isSelected, onClick = {
+            if (isSelected){
+                onProductSelected(product.productId)
+            }
+
         })
     }
 }
