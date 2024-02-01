@@ -51,7 +51,7 @@ fun MapTagToRackScreen(
         onDispose {
             tag.value = null
         }
-    }, key1 = tag.value)
+    }, key1 = Unit)
 
     Scaffold(
         modifier = Modifier
@@ -98,7 +98,7 @@ fun MapTagToRackScreen(
                         "NFC", "EMPTY"
                     )
                     NfcUtil.writeOnTag(tag.value, """
-                       { "tagId" : ${tagMapping.tagId} }
+                       { "tagId" : ${tagMapping.tagId}, "rackId" : ${tagMapping.rackId} }
                     """.trimIndent(), context) {
                         if (it) {
                             tagMappingDatabase.child(tagMapping.tagId).setValue(tagMapping)

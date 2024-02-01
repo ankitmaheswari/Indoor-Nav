@@ -47,7 +47,7 @@ import com.indoornav.business.store.TagMapping
 import com.indoornav.util.NfcUtil
 import java.util.UUID
 
-data class TagInfo(val tagId: String)
+data class TagInfo(val tagId: String, val rackId: String)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapProductToTagScreen(
@@ -69,6 +69,9 @@ fun MapProductToTagScreen(
     var tagId by remember {
         mutableStateOf("")
     }
+    var rackId by remember {
+        mutableStateOf("")
+    }
     val gson by remember {
         mutableStateOf(Gson())
     }
@@ -78,6 +81,7 @@ fun MapProductToTagScreen(
             Log.d("LaunchedEffect", tag.value.toString())
             NfcUtil.readTag(tag.value!!, context) {
                 tagId = gson.fromJson(it.toString(), TagInfo::class.java).tagId
+                rackId = gson.fromJson(it.toString(), TagInfo::class.java).rackId
             }
         }
     })
@@ -149,8 +153,8 @@ fun MapProductToTagScreen(
                 } else {
                     Text(text = "Tag Connected!!")
                 }
-                if (tagId.isNotEmpty()) {
-                    Text(text = "Tag Id: $tagId")
+                if (rackId.isNotEmpty()) {
+                    Text(text = "Rack Id: $rackId")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
