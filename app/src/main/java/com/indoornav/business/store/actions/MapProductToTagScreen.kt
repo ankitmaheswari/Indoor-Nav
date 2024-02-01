@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,14 +35,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.indoornav.R
 import com.indoornav.business.store.Product
 import com.indoornav.business.store.ProductPosition
 import com.indoornav.business.store.Store
@@ -102,26 +110,54 @@ fun MapProductToTagScreen(
         }
     })
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        topBar = {
-            TopAppBar(title = { Text(text = "Map Product-to-tag") })
-        }
-    ) {
+
         Box(
-            modifier = Modifier.padding(it),
-            contentAlignment = Alignment.Center
+            modifier = Modifier,
         ) {
             Column {
-                Spacer(modifier = Modifier.height(100.dp))
-                Text(text = "Please Select Product")
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(260.dp)
+                    .background(color = Color(0xFFDEF2F7)), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_tag),
+                            contentDescription = null,
+                            modifier = Modifier.size(120.dp),
+                        )
+                        Text(text = "Map Product to Tag" , style = TextStyle(fontSize = 24.sp))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = "Go to particular tag where you want to map the product",
+                            style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
+                        )
+                    }
+
+                }
+
+                if (tag.value == null) {
+                    Box(modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                        .background(Color(0xFFFFFAE9)), contentAlignment = Alignment.Center) {
+                        Text(text = "Tag Not Connected!")
+                    }
+                } else {
+                    Box(modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                        .background(Color(0xFF44A037)), contentAlignment = Alignment.Center) {
+                        Text(text = "Tag Connected!!")
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Please Select Product", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 ExposedDropdownMenuBox(
                     expanded = productDialogExpanded,
                     onExpandedChange = {
                         productDialogExpanded = !productDialogExpanded
-                    }
+                    }, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 64.dp),
                 ) {
                     TextField(
                         value = selectedProduct?.name ?: "",
@@ -147,28 +183,29 @@ fun MapProductToTagScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                if (tag.value == null) {
-                    Text(text = "Tag Not Connected!")
-                } else {
-                    Text(text = "Tag Connected!!")
-                }
+
                 if (rackId.isNotEmpty()) {
-                    Text(text = "Rack Id: $rackId")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Box(modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                        .background(Color(0xFF44A037)), contentAlignment = Alignment.Center) {
+                        Text(text = "Rack Id: $rackId")
+                    }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(text = "Please Enter Product Count")
+                Text(text = "Please Enter Product Count", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 OutlinedTextField(
                     value = productCount.toString(),
                     onValueChange = {
                         productCount = if (it.isEmpty()) 0 else it.toInt()
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(onClick = {
@@ -204,10 +241,12 @@ fun MapProductToTagScreen(
                             ).show()
                         }
 
-                }) {
+                }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
+                    RoundedCornerShape(16.dp)
+                )) {
                     Text(text = "Map Product to rack")
                 }
             }
-        }
+
     }
 }

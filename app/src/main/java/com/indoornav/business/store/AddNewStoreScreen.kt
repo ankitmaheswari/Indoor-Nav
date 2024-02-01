@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,13 +28,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
+import com.indoornav.R
 import com.indoornav.util.Coordinate
 import com.indoornav.util.CoordinateInput
 import com.indoornav.util.CoordinateInputArray
@@ -51,17 +58,8 @@ fun AddNewStoreScreen(
         mutableStateOf(Gson())
     }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        topBar = {
-            TopAppBar(title = { Text(text = "Create New Store") })
-        }
-    ) {
         Box(
-            modifier = Modifier.padding(it),
-            contentAlignment = Alignment.Center
+            modifier = Modifier,
         ) {
             var storeName by remember { mutableStateOf("") }
             var storeAddress by remember { mutableStateOf("") }
@@ -76,35 +74,55 @@ fun AddNewStoreScreen(
 
             LazyColumn {
                 item {
-                    Text(text = "Layout type: Grid")
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp)
+                        .background(color = Color(0xFFDEF2F7)), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_store),
+                                contentDescription = null,
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(text = "Create New Store" , style = TextStyle(fontSize = 24.sp))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = "Enter all store details carefully",
+                                style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
+                            )
+                        }
+
+                    }
+                }
+                item {
+                    Text(text = "Layout type: Grid", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Please Enter Store Name")
+                    Text(text = "Please Enter Store Name", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                     OutlinedTextField(
                         value = storeName,
                         onValueChange = {
                             storeName = it
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Please Enter Store Complete Address")
+                    Text(text = "Please Enter Store Complete Address", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                     OutlinedTextField(
                         value = storeAddress,
                         onValueChange = {
                             storeAddress = it
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Please Enter Floor Number")
+                    Text(text = "Please Enter Floor Number", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                     OutlinedTextField(
                         value = floorNumber.toString(),
                         onValueChange = {
                             floorNumber = if (it.isEmpty()) 0 else it.toInt()
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(
@@ -113,42 +131,42 @@ fun AddNewStoreScreen(
                             .padding(10.dp)
                     ) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Please Enter Total Rows")
+                        Text(text = "Please Enter Total Rows", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                         OutlinedTextField(
                             value = rowsCount.toString(),
                             onValueChange = {
                                 rowsCount = if (it.isEmpty()) 0 else it.toInt()
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Please Enter Total Cols")
+                        Text(text = "Please Enter Total Cols", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                         OutlinedTextField(
                             value = colsCount.toString(),
                             onValueChange = {
                                 colsCount = if (it.isEmpty()) 0 else it.toInt()
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Please Enter Total Shelves")
+                        Text(text = "Please Enter Total Shelves", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                         OutlinedTextField(
                             value = shelvesCount.toString(),
                             onValueChange = {
                                 shelvesCount = if (it.isEmpty()) 0 else it.toInt()
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Please Enter Entry Location")
+                        Text(text = "Please Enter Entry Location", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                         CoordinateInput { coordinate ->
                             entryCords = coordinate
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Please Enter Rack Mapping")
+                        Text(text = "Please Enter Rack Mapping", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                         CoordinateInputArray( coordinates = rackMappingCoordinatesShelf,
                             onAdd = { coordinates ->
                                 rackMappingCoordinatesShelf = rackMappingCoordinatesShelf + coordinates
@@ -165,7 +183,9 @@ fun AddNewStoreScreen(
                         Button(
                             onClick = { addNewStore(navController, storeDatabase, gson, storeName, storeAddress,
                                 floorNumber, rowsCount, colsCount, shelvesCount,
-                                entryCords, rackMappingCoordinatesShelf, context) }, Modifier.height(56.dp)) {
+                                entryCords, rackMappingCoordinatesShelf, context) }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
+                                RoundedCornerShape(16.dp)
+                            )) {
                             Text(text = "Save Store")
                         }
 
@@ -173,7 +193,7 @@ fun AddNewStoreScreen(
                     }
                 }
             }
-        }
+
     }
 }
 

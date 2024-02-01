@@ -43,13 +43,11 @@ import com.indoornav.navigation.NavigationRoute
 @Composable
 fun StoreActionOptionsScreen(
     navController: NavController,
+    gson: Gson,
     storeDatabase: DatabaseReference,
     storeId: String,
     floorId: String
 ) {
-    val gson by remember {
-        mutableStateOf(Gson())
-    }
     var store by remember {
         mutableStateOf<Store?>(null)
     }
@@ -70,17 +68,9 @@ fun StoreActionOptionsScreen(
         }
 
     })
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        topBar = {
-            TopAppBar(title = { Text(text = "Select Action") })
-        }
-    ) {
+
         Box(
-            modifier = Modifier.padding(it),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(modifier = Modifier
@@ -131,6 +121,6 @@ fun StoreActionOptionsScreen(
                 }
             }
         }
-    }
+
 
 }
