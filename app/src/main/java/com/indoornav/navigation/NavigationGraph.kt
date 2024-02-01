@@ -19,8 +19,8 @@ import com.indoornav.ui.screens.HomeScreen
 @Composable
 fun NavigationGraph(
     storeDatabase: DatabaseReference,
-    productPositionDatabase: DatabaseReference,
     productDatabase: DatabaseReference,
+    productPositionDatabase: DatabaseReference,
     tagMappingDatabase: DatabaseReference,
 ) {
     val navController = rememberNavController()
@@ -88,7 +88,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            AddProductScreen(navController, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
+            AddProductScreen(navController, productDatabase, it.arguments?.getString("storeId")!!, it.arguments?.getString("floorId")!!)
         }
 
         composable(

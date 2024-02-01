@@ -144,6 +144,7 @@ fun StoreAndFloorSelectionScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(100.dp))
             Button(onClick = {
                 if (selectedStore?.storeId != null && selectedFloor?.floorId != null) {
                     val path = NavigationRoute.STORE_ACTION_SCREEN.replace(
