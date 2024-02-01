@@ -9,21 +9,40 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.indoornav.navigation.NavigationGraph
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.database
+import com.indoornav.business.store.PRODUCT
+import com.indoornav.business.store.PRODUCT_POSITION
+import com.indoornav.business.store.STORES
+import com.indoornav.business.store.TAG_MAPPING
 import com.indoornav.ui.theme.IndoorNavTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+
+        val storeDatabase = Firebase.database.getReference(STORES)
+        val productDatabase = Firebase.database.getReference(PRODUCT)
+        val productPositionDatabase = Firebase.database.getReference(PRODUCT_POSITION)
+        val tagMappingDatabase = Firebase.database.getReference(TAG_MAPPING)
         setContent {
             IndoorNavTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = Color.White
                 ) {
-                    NavigationGraph()
+                    NavigationGraph(
+                        storeDatabase,
+                        productDatabase,
+                        productPositionDatabase,
+                        tagMappingDatabase
+                    )
                 }
             }
         }
