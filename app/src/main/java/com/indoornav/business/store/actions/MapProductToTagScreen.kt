@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -114,139 +115,170 @@ fun MapProductToTagScreen(
         Box(
             modifier = Modifier,
         ) {
-            Column {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp)
-                    .background(color = Color(0xFFDEF2F7)), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_tag),
-                            contentDescription = null,
-                            modifier = Modifier.size(120.dp),
-                        )
-                        Text(text = "Map Product to Tag" , style = TextStyle(fontSize = 24.sp))
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Go to particular tag where you want to map the product",
-                            style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
-                        )
-                    }
+            LazyColumn {
+                item {
 
-                }
-
-                if (tag.value == null) {
-                    Box(modifier = Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .background(Color(0xFFFFFAE9)), contentAlignment = Alignment.Center) {
-                        Text(text = "Tag Not Connected!")
-                    }
-                } else {
-                    Box(modifier = Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .background(Color(0xFF44A037)), contentAlignment = Alignment.Center) {
-                        Text(text = "Tag Connected!!")
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Please Select Product", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                ExposedDropdownMenuBox(
-                    expanded = productDialogExpanded,
-                    onExpandedChange = {
-                        productDialogExpanded = !productDialogExpanded
-                    }, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 64.dp),
-                ) {
-                    TextField(
-                        value = selectedProduct?.name ?: "",
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = productDialogExpanded) },
-                        modifier = Modifier.menuAnchor()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = productDialogExpanded,
-                        onDismissRequest = { productDialogExpanded = false }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(260.dp)
+                            .background(color = Color(0xFFDEF2F7)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        productList.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(text = item?.name ?: "") },
-                                onClick = {
-                                    selectedProduct = item
-                                    productDialogExpanded = false
-                                }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_tag),
+                                contentDescription = null,
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(text = "Map Product to Tag", style = TextStyle(fontSize = 24.sp))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Go to particular tag where you want to map the product",
+                                style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
                             )
                         }
+
                     }
-                }
 
-
-                if (rackId.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Box(modifier = Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .background(Color(0xFF44A037)), contentAlignment = Alignment.Center) {
-                        Text(text = "Rack Id: $rackId")
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(text = "Please Enter Product Count", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                OutlinedTextField(
-                    value = productCount.toString(),
-                    onValueChange = {
-                        productCount = if (it.isEmpty()) 0 else it.toInt()
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(onClick = {
-                    if (selectedProduct == null) {
-                        Toast.makeText(context, "Please Select Product", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
                     if (tag.value == null) {
-                        Toast.makeText(context, "Please Connect NFC Tag", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    if (productCount <= 0) {
-                        Toast.makeText(context, "Please Enter Product Count", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    val productPosition = ProductPosition(
-                        productId = selectedProduct!!.productId,
-                        tagId, productCount
-                    )
-                    productPlacementDatabase.child(productPosition.productId).setValue(productPosition)
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                context,
-                                "Product mapped to rack Successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            navController.popBackStack()
-                        }.addOnFailureListener {
-                            Toast.makeText(
-                                context,
-                                "Some Error occurred!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        Box(
+                            modifier = Modifier
+                                .height(60.dp)
+                                .fillMaxWidth()
+                                .background(Color(0xFFFFFAE9)), contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Tag Not Connected!")
                         }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .height(60.dp)
+                                .fillMaxWidth()
+                                .background(Color(0xFF44A037)), contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Tag Connected!!")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Please Select Product",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    ExposedDropdownMenuBox(
+                        expanded = productDialogExpanded,
+                        onExpandedChange = {
+                            productDialogExpanded = !productDialogExpanded
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 64.dp),
+                    ) {
+                        TextField(
+                            value = selectedProduct?.name ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = productDialogExpanded) },
+                            modifier = Modifier.menuAnchor()
+                        )
 
-                }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
-                    RoundedCornerShape(16.dp)
-                )) {
-                    Text(text = "Map Product to rack")
+                        ExposedDropdownMenu(
+                            expanded = productDialogExpanded,
+                            onDismissRequest = { productDialogExpanded = false }
+                        ) {
+                            productList.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = item?.name ?: "") },
+                                    onClick = {
+                                        selectedProduct = item
+                                        productDialogExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+
+                    if (rackId.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(60.dp)
+                                .fillMaxWidth()
+                                .background(Color(0xFF44A037)), contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Rack Id: $rackId")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Please Enter Product Count",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = productCount.toString(),
+                        onValueChange = {
+                            productCount = if (it.isEmpty()) 0 else it.toInt()
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            if (selectedProduct == null) {
+                                Toast.makeText(context, "Please Select Product", Toast.LENGTH_SHORT)
+                                    .show()
+                                return@Button
+                            }
+                            if (tag.value == null) {
+                                Toast.makeText(
+                                    context,
+                                    "Please Connect NFC Tag",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
+                            }
+                            if (productCount <= 0) {
+                                Toast.makeText(
+                                    context,
+                                    "Please Enter Product Count",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
+                            }
+                            val productPosition = ProductPosition(
+                                productId = selectedProduct!!.productId,
+                                tagId, productCount
+                            )
+                            productPlacementDatabase.child(productPosition.productId)
+                                .setValue(productPosition)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Product mapped to rack Successfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.popBackStack()
+                                }.addOnFailureListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Some Error occurred!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+                        }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                    ) {
+                        Text(text = "Map Product to rack")
+                    }
                 }
             }
-
     }
 }

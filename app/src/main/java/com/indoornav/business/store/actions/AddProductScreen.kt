@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -73,126 +74,152 @@ fun AddProductScreen(
         Box(
             modifier = Modifier
         ) {
-            Column {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp)
-                    .background(color = Color(0xFFDEF2F7)), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add),
-                            contentDescription = null,
-                            modifier = Modifier.size(120.dp),
-                        )
-                        Text(text = "Add Product to Inventory" , style = TextStyle(fontSize = 24.sp))
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Fill in product details",
-                            style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
-                        )
-                    }
-
-                }
-                Text(text = "Please Select Category", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                ExposedDropdownMenuBox(
-                    expanded = categoryDialogExpanded,
-                    onExpandedChange = {
-                        categoryDialogExpanded = !categoryDialogExpanded
-                    },
-                        modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 64.dp),
-                ) {
-                    TextField(
-                        value = selectedCategory ?: "",
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryDialogExpanded) },
-                        modifier = Modifier.menuAnchor()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = categoryDialogExpanded,
-                        onDismissRequest = { categoryDialogExpanded = false }
+            LazyColumn {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(260.dp)
+                            .background(color = Color(0xFFDEF2F7)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        categoryList.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(text = item ?: "") },
-                                onClick = {
-                                    selectedCategory = item
-                                    categoryDialogExpanded = false
-                                }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_add),
+                                contentDescription = null,
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(
+                                text = "Add Product to Inventory",
+                                style = TextStyle(fontSize = 24.sp)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Fill in product details",
+                                style = TextStyle(fontSize = 16.sp, color = Color(0xFF9D9D9D))
                             )
                         }
+
                     }
-                }
-
-
-                Text(text = "Please Enter Product Name", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                OutlinedTextField(
-                    value = productName,
-                    onValueChange = {
-                        productName = it
-                    },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-
-
-                Text(text = "Please Enter MRP", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                OutlinedTextField(
-                    value = MRP.toString(),
-                    onValueChange = {
-                        MRP = if (it.isEmpty()) 0 else it.toInt()
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-
-                Text(text = "Please Enter Selling Price", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                OutlinedTextField(
-                    value = sellingPrice.toString(),
-                    onValueChange = {
-                        sellingPrice = if (it.isEmpty()) 0 else it.toInt()
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-
-                Button(onClick = {
-                    if (productName.isEmpty() || selectedCategory.isNullOrEmpty() || sellingPrice <= 0 || MRP <= 0) {
-                        Toast.makeText(
-                            context,
-                            "Please Enter Product values properly!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@Button
-                    }
-                    val product = Product(
-                        UUID.randomUUID().toString(),
-                        name = productName,
-                        category = selectedCategory!!,
-                        priceInPaisa = sellingPrice,
-                        mrpInPaisa = MRP
+                    Text(
+                        text = "Please Select Category",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
-                    productDatabase
-                        .child(product.productId)
-                        .setValue(product)
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                context,
-                                "Product Added Successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            navController.popBackStack()
-                        }.addOnFailureListener {
-                            Toast.makeText(
-                                context,
-                                "Some Error occurred!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                    ExposedDropdownMenuBox(
+                        expanded = categoryDialogExpanded,
+                        onExpandedChange = {
+                            categoryDialogExpanded = !categoryDialogExpanded
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 64.dp),
+                    ) {
+                        TextField(
+                            value = selectedCategory ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryDialogExpanded) },
+                            modifier = Modifier.menuAnchor()
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = categoryDialogExpanded,
+                            onDismissRequest = { categoryDialogExpanded = false }
+                        ) {
+                            categoryList.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = item ?: "") },
+                                    onClick = {
+                                        selectedCategory = item
+                                        categoryDialogExpanded = false
+                                    }
+                                )
+                            }
                         }
-                }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
-                    RoundedCornerShape(16.dp)
-                )) {
-                    Text(text = "Add Product")
+                    }
+
+
+                    Text(
+                        text = "Please Enter Product Name",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = productName,
+                        onValueChange = {
+                            productName = it
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+
+                    Text(
+                        text = "Please Enter MRP",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = MRP.toString(),
+                        onValueChange = {
+                            MRP = if (it.isEmpty()) 0 else it.toInt()
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+                    Text(
+                        text = "Please Enter Selling Price",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    OutlinedTextField(
+                        value = sellingPrice.toString(),
+                        onValueChange = {
+                            sellingPrice = if (it.isEmpty()) 0 else it.toInt()
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+                    Button(
+                        onClick = {
+                            if (productName.isEmpty() || selectedCategory.isNullOrEmpty() || sellingPrice <= 0 || MRP <= 0) {
+                                Toast.makeText(
+                                    context,
+                                    "Please Enter Product values properly!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
+                            }
+                            val product = Product(
+                                UUID.randomUUID().toString(),
+                                name = productName,
+                                category = selectedCategory!!,
+                                priceInPaisa = sellingPrice,
+                                mrpInPaisa = MRP
+                            )
+                            productDatabase
+                                .child(product.productId)
+                                .setValue(product)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Product Added Successfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.popBackStack()
+                                }.addOnFailureListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Some Error occurred!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                    ) {
+                        Text(text = "Add Product")
+                    }
                 }
             }
         }
