@@ -1,6 +1,8 @@
 package com.indoornav.ui.screens.customerflow
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,19 +34,34 @@ import com.indoornav.business.store.FloorPlan
 import com.indoornav.business.store.Product
 import com.indoornav.business.store.Store
 import com.indoornav.navigation.NavigationRoute
+import com.indoornav.util.StringUtil
 
 
 data class QRResponse(val storeId: String, val floorId: String, val cord: Coordinate)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomerStoreScreen(
     navController: NavHostController,
     gson: Gson,
     storeDatabase: DatabaseReference,
-    productDatabase: DatabaseReference
+    productDatabase: DatabaseReference,
+    qrValue: String
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val qrValue = navBackStackEntry?.arguments?.getString(NavigationRoute.QR_DATA)
-    val qrResponse = gson.fromJson(qrValue, QRResponse::class.java)
+    var qrResponse by remember {
+        mutableStateOf<QRResponse?>(null)
+    }
+    if (qrValue.isNotEmpty()) {
+        var qr = StringUtil.getBase64DecodedString(qrValue)!!
+        try {
+            qr = qr.substring(qr.indexOf(" ")).trim()
+            Log.d("qr", qr)
+            qrResponse =
+                gson.fromJson(qr, QRResponse::class.java)
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
     val productList by remember {
         mutableStateOf(arrayListOf<Product>())
     }
@@ -55,18 +72,21 @@ fun CustomerStoreScreen(
         mutableStateOf<FloorPlan?>(null)
     }
     //todo fetch the data from firebase regarding that store and path
-    LaunchedEffect(key1 = qrResponse.storeId, block = {
-        storeDatabase.child(qrResponse.storeId).get().addOnSuccessListener {
-            store = gson.fromJson<Store>(gson.toJson(it.value), Store::class.java)
-            store?.let {
-                try {
-                    floor = gson.fromJson(
-                        gson.toJson(it.floorPlan?.get(qrResponse.floorId) ?: "{}"),
-                        FloorPlan::class.java
-                    )
-                } catch (e: Exception) {e.printStackTrace()}
+    LaunchedEffect(key1 = qrResponse, block = {
+        qrResponse?.let {
+            storeDatabase.child(it.storeId).get().addOnSuccessListener {
+                store = gson.fromJson<Store>(gson.toJson(it.value), Store::class.java)
+                store?.let {
+                    try {
+                        floor = gson.fromJson(
+                            gson.toJson(it.floorPlan?.get(qrResponse?.floorId?: "") ?: "{}"),
+                            FloorPlan::class.java
+                        )
+                    } catch (e: Exception) {e.printStackTrace()}
+                }
             }
         }
+
 
     })
 
