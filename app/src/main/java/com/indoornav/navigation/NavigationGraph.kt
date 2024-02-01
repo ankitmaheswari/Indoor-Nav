@@ -75,7 +75,7 @@ fun NavigationGraph(
             ),
             enterTransition = { EnterTransition.None }
         ) {
-            StoreActionOptionsScreen(navController, it.arguments?.getString("storeId")!!, it.arguments!!.getString("floorId")!!)
+            StoreActionOptionsScreen(navController, storeDatabase, it.arguments?.getString("storeId")!!, it.arguments!!.getString("floorId")!!)
         }
 
         composable(
