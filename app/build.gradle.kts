@@ -70,4 +70,16 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+
+ /*   // CameraX
+    implementation ("androidx.camera:camera-camera2:1.3.1")
+    implementation ("androidx.camera:camera-lifecycle:1.3.1")
+    implementation ("androidx.camera:camera-view:1.3.1")
+
+    // Zxing
+    implementation ("com.google.zxing:core:3.3.3")*/
+
+    implementation ("com.dynamsoft:dynamsoftcameraenhancer:2.3.11@aar")
+    implementation ("com.dynamsoft:dynamsoftbarcodereader:9.6.20@aar")
 }
