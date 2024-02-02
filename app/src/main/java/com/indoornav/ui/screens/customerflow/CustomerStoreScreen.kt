@@ -2,6 +2,7 @@ package com.indoornav.ui.screens.customerflow
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,11 +21,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
@@ -86,8 +94,8 @@ fun CustomerStoreScreen(
     var selectedProductId by remember {
         mutableStateOf<String?>(null)
     }
-    val productList by remember {
-        mutableStateOf(arrayListOf<Product>())
+    var productList by remember {
+        mutableStateOf(listOf<Product>())
     }
     var store by remember {
         mutableStateOf<Store?>(null)
@@ -116,18 +124,27 @@ fun CustomerStoreScreen(
 
     })
 
-    LaunchedEffect(key1 = Unit, block = {
+    var loader by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = productDatabase, block = {
+        loader = true
         productDatabase.get().addOnSuccessListener {
             val productListType = object : TypeToken<List<Product>>() {}.type
-            productList.clear()
-            productList.addAll(
-                gson.fromJson<List<Product>>(
-                    gson.toJson(ArrayList((it.getValue() as HashMap<String, HashMap<*, *>>).values)),
-                    productListType
-                )
+            productList = gson.fromJson<List<Product>>(
+                gson.toJson(ArrayList((it.getValue() as HashMap<String, HashMap<*, *>>).values)),
+                productListType
             )
+            Log.d("CustomerStoreScreen", productList.toString())
+            loader = false
         }.addOnFailureListener {
-            Log.e("firebase", "Error getting data", it)
+            Log.e("CustomerStoreScreen", "Error getting data", it)
+            Toast.makeText(context, "Some Error Occurred", Toast.LENGTH_SHORT).show()
+            loader = false
+        }.addOnCanceledListener {
+            Log.e("CustomerStoreScreen", "Error getting data")
+            Toast.makeText(context, "Some Error Occurred", Toast.LENGTH_SHORT).show()
+            loader = false
         }
     })
 
@@ -135,11 +152,6 @@ fun CustomerStoreScreen(
 
     Scaffold(
         topBar = {
-/*            Column {
-                GenericTopBar() {
-                    navController.popBackStack()
-                }
-            }*/
         },
         bottomBar = {
             Footer {
@@ -155,45 +167,67 @@ fun CustomerStoreScreen(
                 )
             }
         }) { outerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
-                // .offset(y = -16.dp)
-                //.padding(outerPadding)
-                .fillMaxSize(),
-            //   horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(outerPadding)
+                .fillMaxSize()
         ) {
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    //  horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            StoreHeaderCard(navController, store)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
 
-                    StoreHeaderCard(navController, store)
+                item {
+                    // Content of the Column
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.store),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(45.dp)
+                                .width(45.dp)
+                        )
+                        // Add your column content here
+                        Text("Welcome to", fontSize = 16.sp, color = Color.Black)
+                        Text(
+                            text = store?.name ?: "Retail Store",
+                            fontSize = 24.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                item {
+                    ProgressDialog(loader, message = "Please wait...")
                 }
 
-            }
-            item {
-                Text(text = "Choose the item to locate", modifier = Modifier.padding(start = 16.dp))
-                CategoryHeaderTab()
-            }
-
-            items(productList.size) { item ->
-            }
-
-            productList.forEach { product ->
                 item {
+                    Text(
+                        text = "Choose the item to locate",
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    CategoryHeaderTab()
+                }
+
+                items(productList, key = { item -> item.productId }) { product ->
                     StoreItemCard(product, {
                         selectedProductId = it
                     }) {
                         selectedProductId == it
                     }
                 }
+
+
             }
-
-
         }
+
     }
 }
 
@@ -261,49 +295,22 @@ fun CategoryPillItem(
 private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp),
-       // contentAlignment = Alignment.CenterStart
+            .fillMaxWidth(),
     ) {
         GenericTopBar {
             navController.popBackStack()
-
         }
         // PNG image as the background
         Image(
             painter = painterResource(id = R.drawable.background_green), // Replace with your image resource
             contentDescription = "Background Image",
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .alpha(0.5f)
-                .align(Alignment.Center)// Adjust the alpha as needed
         )
 
-        // Content of the Column
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.store),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(45.dp)
-                    .width(45.dp)
-            )
-            // Add your column content here
-            Text("Welcome to", fontSize = 16.sp, color = Color.Black)
-            Text(
-                text = store?.name ?: "Retail Store",
-                fontSize = 24.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 
 }
@@ -317,7 +324,7 @@ private fun Footer(onClick: () -> Unit) {
                 vertical = 16.dp
             )
             .fillMaxWidth()
-
+            .height(60.dp)
             .background(
                 color = Color(0xff44A037),
                 shape = RoundedCornerShape(8.dp)
@@ -355,28 +362,40 @@ private fun StoreItemCard(
     isSelected: (String) -> Boolean
 ) {
 
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.burger),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(54.dp)
-                    .width(54.dp)
-            )
-            Column(Modifier.padding(start = 16.dp)) {
-                Text(text = product.name)
-                Text(text = "₹ ${product.mrpInPaisa}", modifier = Modifier.padding(vertical = 8.dp))
+            Row(horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.burger),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(54.dp)
+                        .width(54.dp)
+                )
+                Column(Modifier.padding(start = 16.dp)) {
+                    Text(text = product.name)
+                    Text(
+                        text = "₹ ${product.mrpInPaisa}",
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
             }
-            RadioButton(selected = isSelected(product.productId), onClick = {
-                onProductSelected(product.productId)
+            Box(Modifier.fillMaxWidth()) {
+                RadioButton(
+                    selected = isSelected(product.productId), onClick = {
+                        onProductSelected(product.productId)
+                    }, modifier = Modifier.align(Alignment.CenterEnd)
+                )
             }
-            )
+
         }
         Divider()
     }
@@ -384,12 +403,31 @@ private fun StoreItemCard(
 
 private fun getCategoryTabList(): List<CategoryTabData> {
     return listOf(
-        CategoryTabData("Snacks", R.drawable.ic_store),
-        CategoryTabData("Vegies", R.drawable.ic_store),
-        CategoryTabData("Bakery", R.drawable.ic_store),
-        CategoryTabData("Meat", R.drawable.ic_store),
-        CategoryTabData("Masala", R.drawable.ic_store),
-        CategoryTabData("Bevereges", R.drawable.ic_store),
+        CategoryTabData("Food", R.drawable.ic_store),
+        CategoryTabData("Grocery", R.drawable.ic_store),
+        CategoryTabData("Electronics", R.drawable.ic_store),
+        CategoryTabData("Utility", R.drawable.ic_store),
     )
 }
+
+@Composable
+fun ProgressDialog(isShowing: Boolean, message: String) {
+    if (isShowing) {
+        Dialog(onDismissRequest = { /* Dismiss the dialog */ }) {
+            Surface(
+                modifier = Modifier.width(280.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = message)
+                }
+            }
+        }
+    }
+}
+
 
