@@ -179,12 +179,35 @@ fun CustomerStoreScreen(
             ) {
 
                 item {
+                    // Content of the Column
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.store),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(45.dp)
+                                .width(45.dp)
+                        )
+                        // Add your column content here
+                        Text("Welcome to", fontSize = 16.sp, color = Color.Black)
+                        Text(
+                            text = store?.name ?: "Retail Store",
+                            fontSize = 24.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                item {
                     ProgressDialog(loader, message = "Please wait...")
                 }
 
-                item {
-                    Spacer(modifier = Modifier.height(150.dp))
-                }
                 item {
                     Text(
                         text = "Choose the item to locate",
@@ -287,30 +310,7 @@ private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
                 .alpha(0.5f)
         )
 
-        // Content of the Column
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.store),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(45.dp)
-                    .width(45.dp)
-            )
-            // Add your column content here
-            Text("Welcome to", fontSize = 16.sp, color = Color.Black)
-            Text(
-                text = store?.name ?: "Retail Store",
-                fontSize = 24.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 
 }
