@@ -119,7 +119,7 @@ fun StoreAndFloorSelectionScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_store),
                             contentDescription = null,
-                            modifier = Modifier.size(120.dp),
+                            modifier = Modifier.size(80.dp),
                             tint = Color.Unspecified
                         )
                         Text(text = "Inventory Management", style = TextStyle(fontSize = 32.sp))

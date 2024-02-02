@@ -85,7 +85,7 @@ fun AddNewStoreScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_store),
                                 contentDescription = null,
-                                modifier = Modifier.size(120.dp),
+                                modifier = Modifier.size(80.dp),
                                 tint = Color.Unspecified
                             )
                             Text(text = "Create New Store" , style = TextStyle(fontSize = 24.sp))

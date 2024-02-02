@@ -84,7 +84,7 @@ fun StoreActionOptionsScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_store),
                             contentDescription = null,
-                            modifier = Modifier.size(120.dp),
+                            modifier = Modifier.size(80.dp),
                             tint = Color.Unspecified
                         )
                         Text(text = ((store?.name?: "") + (if (floor?.floorNumber != null) (" " + floor!!.floorNumber.toString() + " floor") else "")) , style = TextStyle(fontSize = 24.sp))

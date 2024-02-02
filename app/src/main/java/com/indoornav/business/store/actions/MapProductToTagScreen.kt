@@ -132,7 +132,7 @@ fun MapProductToTagScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_tag),
                                 contentDescription = null,
-                                modifier = Modifier.size(120.dp),
+                                modifier = Modifier.size(80.dp),
                                 tint = Color.Unspecified
                             )
                             Spacer(modifier = Modifier.height(8.dp))
