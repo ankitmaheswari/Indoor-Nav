@@ -193,32 +193,13 @@ fun CustomerStoreScreen(
                     CategoryHeaderTab()
                 }
 
-                if(productList.isNotEmpty()) {
-                    item {
-                        StoreItemCard(productList.get(0), {
-                            selectedProductId = it
-                        }) {
-                            selectedProductId == it
-                        }
+                items(productList, key = { item -> item.productId }) { product ->
+                    StoreItemCard(product, {
+                        selectedProductId = it
+                    }) {
+                        selectedProductId == it
                     }
                 }
-                productList.forEach { product ->
-                    item {
-                        StoreItemCard(product, {
-                            selectedProductId = it
-                        }) {
-                            selectedProductId == it
-                        }
-                    }
-                }
-
-//                items(productList, key = { item -> item.productId }) { product ->
-//                    StoreItemCard(product, {
-//                        selectedProductId = it
-//                    }) {
-//                        selectedProductId == it
-//                    }
-//                }
 
 
             }
