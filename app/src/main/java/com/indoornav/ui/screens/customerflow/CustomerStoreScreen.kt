@@ -112,8 +112,6 @@ fun CustomerStoreScreen(
         filteredOrdersByType(selectedTab, productList)
     }*/
 
-
-
     LaunchedEffect(key1 = qrResponse, block = {
         qrResponse?.let {
             storeDatabase.child(it.storeId).get().addOnSuccessListener {
@@ -403,7 +401,7 @@ private fun StoreItemCard(
         ) {
             Row(horizontalArrangement = Arrangement.Center) {
                 Image(
-                    painter = painterResource(id = R.drawable.burger),
+                    painter = painterResource(id = getDrawableByProductName(product.name)),
                     contentDescription = null,
                     modifier = Modifier
                         .height(54.dp)
@@ -473,7 +471,7 @@ private fun getDrawableByProductName(name : String) : Int{
         "kurkure" -> R.drawable.kurkure
         "lays" -> R.drawable.lays
         "wafer" -> R.drawable.wafers
-        "caledar" -> R.drawable.noimage
+        "calendar" -> R.drawable.calendar
         else -> R.drawable.noimage
     }
 }
