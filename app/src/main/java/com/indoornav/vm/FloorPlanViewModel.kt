@@ -116,6 +116,7 @@ class FloorPlanViewModel: ViewModel() {
         }
         return null
     }
+
 }
 
 enum class ScreenState {

@@ -66,6 +66,12 @@ fun FloorPlanScreen(
     var showDialog by remember {
         mutableStateOf(false)
     }
+    var popToBackStack by remember {
+        mutableStateOf(false)
+    }
+    var dialogMessage by remember {
+        mutableStateOf("")
+    }
 
     Scaffold(
         topBar = {
@@ -105,6 +111,18 @@ fun FloorPlanScreen(
                             },
                             getLabel = { row, column ->
                                 return@FloorPlanLayout floorPlanViewModel.getLabel(row, column)
+                            },
+                            onClick = { row, column ->
+                                if (row == 2 && column == 1) {
+                                    dialogMessage = "10% Off on Kurkure"
+                                    showDialog = true
+                                    popToBackStack = false
+                                }
+                                if (row == 4 && column == 4) {
+                                    dialogMessage = "11% Off on Wafer"
+                                    showDialog = true
+                                    popToBackStack = false
+                                }
                             }
                         )
 
@@ -158,7 +176,9 @@ fun FloorPlanScreen(
                                     .height(64.dp)
                                     .clip(RoundedCornerShape(16.dp)),
                                 onClick = {
+                                    dialogMessage = "10% Off on Kurkure!! Why don't you buy?"
                                     showDialog = true
+                                    popToBackStack = true
                                 }
                             ) {
                                 Text(text = "Mark Found")
@@ -192,9 +212,12 @@ fun FloorPlanScreen(
             }
         }
 
-        DialogWithTextAndOkButton(showDialog, "Offer", "10% Off on Kurkure!! Why don't you buy?") {
+        DialogWithTextAndOkButton(showDialog, "Offer", dialogMessage) {
             showDialog = false
-            navController.popBackStack()
+            if (popToBackStack) {
+                navController.popBackStack()
+                popToBackStack = false
+            }
         }
 
     }

@@ -2,6 +2,7 @@ package com.indoornav.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -38,7 +39,8 @@ fun FloorPlanLayout(rows: Int,
                     isInPath: (Int, Int) -> Boolean,
                     isStart: (Int, Int) -> Boolean,
                     isDestination: (Int, Int) -> Boolean,
-                    getLabel: (Int, Int) -> String?
+                    getLabel: (Int, Int) -> String?,
+                    onClick: (Int, Int) -> Unit
 ) {
     val exteriorPadding = 8.dp
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -89,7 +91,8 @@ fun FloorPlanLayout(rows: Int,
                                     modifier = Modifier
                                         .size(rowSize.dp)
                                         .background(Shelf_Fill)
-                                        .border(width = 1.dp, color = Border_Primary), contentAlignment = Alignment.Center
+                                        .border(width = 1.dp, color = Border_Primary)
+                                        .clickable(onClick = { onClick(r, c) }), contentAlignment = Alignment.Center
                                 ) {
                                     getLabel(r, c)?.let {
                                         Text(it, style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold), color = Color(0xFF3AA02C), )
