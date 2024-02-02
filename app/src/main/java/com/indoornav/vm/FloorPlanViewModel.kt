@@ -20,6 +20,9 @@ class FloorPlanViewModel: ViewModel() {
     private val _screenState = MutableStateFlow(ScreenState.LOADING)
     val screenState = _screenState.asStateFlow()
 
+    private val _isPathFetched: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val isPathFetched = _isPathFetched.asStateFlow()
+
     private var floorPlan: Array<Array<Int>>? = null
     private var shortestPath: ArrayList<ArrayList<Int>>? = null
     private var productDetails: ProductWithPosition? = null
@@ -41,11 +44,13 @@ class FloorPlanViewModel: ViewModel() {
     }
 
     fun getShortestPath(start: Array<Int>, productId: String, storeId: String) {
-        _screenState.value = ScreenState.LOADING
+        /*_screenState.value = ScreenState.LOADING*/
+        _isPathFetched.value = false
         viewModelScope.launch(Dispatchers.IO) {
             val productWithPosition = storeRepository.getProductDetails(storeId, productId)
             productWithPosition.collectLatest {productInfo ->
                 if (productInfo != null) {
+                    productDetails = productInfo
                     val rackId = productInfo.tagMapping.rackId
                     val rackRow = rackId[0].digitToInt()
                     val rackColumn = rackId[1].digitToInt()
@@ -69,7 +74,8 @@ class FloorPlanViewModel: ViewModel() {
                         Log.d("Shortest Path", "$shortestPathFound")
                         shortestPath = shortestPathFound
                     }
-                    _screenState.value = ScreenState.SUCCESS
+                    /*_screenState.value = ScreenState.SUCCESS*/
+                    _isPathFetched.value = true
                 }
             }
         }

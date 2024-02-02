@@ -63,12 +63,7 @@ fun HomeScreen(navController: NavController) {
                         .height(64.dp)
                         .clip(RoundedCornerShape(16.dp)), 
                     onClick = {
-                        navController.navigate(NavigationRoute.FLOOR_PLAN.replace(
-                            "{storeId}",
-                            "d3fd16e4-9865-4b6b-b536-8020c9ae5a9b"
-                        ).replace("{floorId}", "77d76590-e0da-406b-9818-52d938ceca02"))
-
-                        //navController.navigate(NavigationRoute.LANDING_SCREEN)
+                        navController.navigate(NavigationRoute.LANDING_SCREEN)
                     }
                 ) {
                     Text(text = "Customer Flow")

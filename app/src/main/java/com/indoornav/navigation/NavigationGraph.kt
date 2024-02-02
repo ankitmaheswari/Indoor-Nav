@@ -77,8 +77,8 @@ fun NavigationGraph(
                 it.arguments?.getString("storeId")!!,
                 it.arguments!!.getString("floorId")!!,
                 it.arguments!!.getString("productId")!!,
-                it.arguments!!.getInt("startX"),
-                it.arguments!!.getInt("startY")
+                it.arguments!!.getInt("row"),
+                it.arguments!!.getInt("column")
             )
         }
 

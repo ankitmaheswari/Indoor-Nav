@@ -64,17 +64,18 @@ fun CustomerStoreScreen(
     var qrResponse by remember {
         mutableStateOf<QRResponse?>(null)
     }
-    if (qrValue.isNotEmpty()) {
-        var qr = StringUtil.getBase64DecodedString(qrValue)!!
-        try {
-            qr = qr.substring(qr.indexOf(" ")).trim()
-            Log.d("qr", qr)
-            qrResponse =
-                gson.fromJson(qr, QRResponse::class.java)
-        }catch (e: Exception) {
-            e.printStackTrace()
+    LaunchedEffect(key1 = qrValue) {
+        if (qrValue.isNotEmpty()) {
+            var qr = StringUtil.getBase64DecodedString(qrValue)!!
+            try {
+                qr = qr.substring(qr.indexOf(" ")).trim()
+                Log.d("qr", qr)
+                qrResponse =
+                    gson.fromJson(qr, QRResponse::class.java)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
-
     }
     var selectedProductId by remember {
         mutableStateOf<String?>(null)
@@ -143,7 +144,7 @@ fun CustomerStoreScreen(
                    .replace("{floorId}", qrResponse!!.floorId)
                    .replace("{productId}", selectedProductId.toString())
                    .replace("{row}", qrResponse!!.cord.rowId.toString())
-                   .replace("{col}", qrResponse!!.cord.colId.toString()))
+                   .replace("{column}", qrResponse!!.cord.colId.toString()))
             }
         }) { outerPadding ->
         LazyColumn(
@@ -168,8 +169,10 @@ fun CustomerStoreScreen(
 
             productList.forEach { product ->
                 item {
-                    StoreItemCard(product){
+                    StoreItemCard(product, {
                         selectedProductId = it
+                    }) {
+                        selectedProductId == it
                     }
                 }
             }
@@ -233,7 +236,8 @@ private fun Footer(onClick: () -> Unit) {
             .background(
                 color = Color.Green,
                 shape = RoundedCornerShape(8.dp)
-            ).fillMaxWidth()
+            )
+            .fillMaxWidth()
             .clickable { onClick() }
             .padding(
                 horizontal = 12.dp,
@@ -260,16 +264,21 @@ private fun Footer(onClick: () -> Unit) {
 }
 
 @Composable
-private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit) {
+private fun StoreItemCard(product: Product,
+                          onProductSelected: (String) -> Unit,
+                          isSelected: (String) -> Boolean
+) {
     Row {
         Image(painter = painterResource(id = R.drawable.burger), contentDescription = null)
         Column {
             Text(text = product.name)
             Text(text = "₹ ${product.mrpInPaisa}")
         }
-        RadioButton(selected = false, onClick = {
-            onProductSelected(product.productId)
-        })
+        RadioButton(selected = isSelected(product.productId),
+            onClick = {
+                onProductSelected(product.productId)
+            }
+        )
     }
 }
 

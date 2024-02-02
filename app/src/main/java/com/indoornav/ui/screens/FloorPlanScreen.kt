@@ -43,19 +43,20 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
     })
 
     val screenState = floorPlanViewModel.screenState.collectAsState()
+    val isPathFetched = floorPlanViewModel.isPathFetched.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Floor Plan of Store") })
         }
-    ) {
+    ) { paddingValues ->
 
-        when(screenState.value) {
+        when (screenState.value) {
             ScreenState.SUCCESS -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it)
+                        .padding(paddingValues)
                         .background(Color.White)
                 ) {
 
@@ -75,27 +76,72 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .height(64.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        onClick = { floorPlanViewModel.getShortestPath(arrayOf(startRow, startColumn), productId, storeId) }
-                    ) {
-                        Text(text = "Fetch Path")
+                    if (isPathFetched.value == false) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .height(64.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            onClick = {
+                                // do nothing
+                            },
+                            enabled = false
+                        ) {
+                            Text(text = "Fetching Path")
+                        }
+                    } else {
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .height(64.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            onClick = {
+                                floorPlanViewModel.getShortestPath(
+                                    arrayOf(
+                                        startRow,
+                                        startColumn
+                                    ), productId, storeId
+                                )
+                            }
+                        ) {
+                            Text(text = "Fetch Path")
+                        }
                     }
 
-                    val productDetails = floorPlanViewModel.getProductDetails(productId, storeId)
+                    val productDetails =
+                        floorPlanViewModel.getProductDetails(productId, storeId)
                     productDetails?.let { product ->
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Product Details:", fontSize = 14.sp, color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            text = "Product Details:",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Product Name: ${product.name}", fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            text = "Product Name: ${product.name}",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Selling Name: ${product.priceInPaisa/100}", fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            text = "Selling Price: ${product.priceInPaisa / 100}",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "MRP: ${product.mrpInPaisa/100}", fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            text = "MRP: ${product.mrpInPaisa / 100}",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
@@ -104,10 +150,12 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
             }
 
             ScreenState.ERROR -> {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .background(Color.White)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(Color.White)
+                ) {
                     Text(
                         "Something went wrong while fetching floor plan",
                         textAlign = TextAlign.Center,
@@ -117,11 +165,14 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
                     )
                 }
             }
+
             else -> {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .background(Color.White)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(Color.White)
+                ) {
                     Text(
                         "Please wait, while we fetch the floor plan",
                         textAlign = TextAlign.Center,
