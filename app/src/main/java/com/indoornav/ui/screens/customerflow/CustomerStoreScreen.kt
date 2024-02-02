@@ -417,7 +417,7 @@ private fun StoreItemCard(
                         )
                         Text(
                             text = getPrice(product.mrpInPaisa),
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
                             textDecoration = TextDecoration.LineThrough
                         )
                     }
@@ -441,7 +441,7 @@ private fun getCategoryTabList(): List<CategoryTabData> {
     return listOf(
         CategoryTabData(0,"Food", R.drawable.snack),
         CategoryTabData(1,"Grocery", R.drawable.apple),
-        CategoryTabData(2,"Utility", R.drawable.bakery),
+        CategoryTabData(2,"Utility", R.drawable.utility),
         CategoryTabData(3,"Electronics", R.drawable.headphones),
     )
 }
