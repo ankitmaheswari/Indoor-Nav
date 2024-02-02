@@ -146,16 +146,18 @@ fun CustomerStoreScreen(
                 if (selectedProductId == null) {
                     return@Footer
                 }
-               navController.navigate(NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
-                   .replace("{floorId}", qrResponse!!.floorId)
-                   .replace("{productId}", selectedProductId.toString())
-                   .replace("{row}", qrResponse!!.cord.rowId.toString())
-                   .replace("{column}", qrResponse!!.cord.colId.toString()))
+                navController.navigate(
+                    NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
+                        .replace("{floorId}", qrResponse!!.floorId)
+                        .replace("{productId}", selectedProductId.toString())
+                        .replace("{row}", qrResponse!!.cord.rowId.toString())
+                        .replace("{column}", qrResponse!!.cord.colId.toString())
+                )
             }
         }) { outerPadding ->
         LazyColumn(
             modifier = Modifier
-               // .offset(y = -16.dp)
+                // .offset(y = -16.dp)
                 //.padding(outerPadding)
                 .fillMaxSize(),
             //   horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,10 +170,6 @@ fun CustomerStoreScreen(
                     //  horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    GenericTopBar {
-                        navController.popBackStack()
-
-                    }
                     StoreHeaderCard(navController, store)
                 }
 
@@ -265,8 +263,12 @@ private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 16.dp),
-        contentAlignment = Alignment.Center
+       // contentAlignment = Alignment.CenterStart
     ) {
+        GenericTopBar {
+            navController.popBackStack()
+
+        }
         // PNG image as the background
         Image(
             painter = painterResource(id = R.drawable.background_green), // Replace with your image resource
@@ -274,7 +276,8 @@ private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f) // Adjust the alpha as needed
+                .alpha(0.5f)
+                .align(Alignment.Center)// Adjust the alpha as needed
         )
 
         // Content of the Column
@@ -326,7 +329,10 @@ private fun Footer(onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.direction),
-            modifier = Modifier.padding(end = 4.dp).height(20.dp).width(20.dp),
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .height(20.dp)
+                .width(20.dp),
             tint = Color.Unspecified,
             contentDescription = null
         )
@@ -343,9 +349,11 @@ private fun Footer(onClick: () -> Unit) {
 }
 
 @Composable
-private fun StoreItemCard(product: Product,
-                          onProductSelected: (String) -> Unit,
-                          isSelected: (String) -> Boolean) {
+private fun StoreItemCard(
+    product: Product,
+    onProductSelected: (String) -> Unit,
+    isSelected: (String) -> Boolean
+) {
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
@@ -365,12 +373,11 @@ private fun StoreItemCard(product: Product,
                 Text(text = product.name)
                 Text(text = "₹ ${product.mrpInPaisa}", modifier = Modifier.padding(vertical = 8.dp))
             }
-        RadioButton(selected = isSelected(product.productId), onClick = {
+            RadioButton(selected = isSelected(product.productId), onClick = {
                 onProductSelected(product.productId)
             }
-
+            )
         }
-        )
         Divider()
     }
 }
