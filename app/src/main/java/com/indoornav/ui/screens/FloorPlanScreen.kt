@@ -1,5 +1,6 @@
 package com.indoornav.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,27 +23,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.indoornav.vm.FloorPlanViewModel
 import com.indoornav.vm.ScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
-                    storeId: String,
-                    floorId: String,
-                    productId: String,
-                    startRow: Int,
-                    startColumn: Int
+fun FloorPlanScreen(
+    navController: NavController,
+    floorPlanViewModel: FloorPlanViewModel,
+    storeId: String,
+    floorId: String,
+    productId: String,
+    startRow: Int,
+    startColumn: Int
 ) {
     LaunchedEffect(key1 = Unit, block = {
-        floorPlanViewModel.getFloorPlan(storeId, floorId)
+        floorPlanViewModel.getFloorPlan(arrayOf(startRow, startColumn), storeId, floorId, productId)
     })
 
+    val context = LocalContext.current
     val screenState = floorPlanViewModel.screenState.collectAsState()
-    val isPathFetched = floorPlanViewModel.isPathFetched.collectAsState()
 
     Scaffold(
         topBar = {
@@ -82,40 +88,13 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (isPathFetched.value == false) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .height(64.dp)
-                                .clip(RoundedCornerShape(16.dp)),
-                            onClick = {
-                                // do nothing
-                            },
-                            enabled = false
-                        ) {
-                            Text(text = "Finding Path")
-                        }
-                    } else {
-
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .height(64.dp)
-                                .clip(RoundedCornerShape(16.dp)),
-                            onClick = {
-                                floorPlanViewModel.getShortestPath(
-                                    arrayOf(
-                                        startRow,
-                                        startColumn
-                                    ), productId, storeId
-                                )
-                            }
-                        ) {
-                            Text(text = "Find Path")
-                        }
-                    }
+                    Text(
+                        text = "Follow the blue path to find your item",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF212121),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
 
                     val productDetails =
                         floorPlanViewModel.getProductDetails(productId, storeId)
@@ -149,6 +128,20 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .height(64.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            onClick = {
+                                Toast.makeText(context.applicationContext, "Item Found", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack()
+                            }
+                        ) {
+                            Text(text = "Mark Found")
+                        }
                     }
 
 

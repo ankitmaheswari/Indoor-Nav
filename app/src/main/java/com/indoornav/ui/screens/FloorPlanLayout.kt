@@ -18,6 +18,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.indoornav.R
+import com.indoornav.ui.theme.Border_Primary
+import com.indoornav.ui.theme.Path_Fill
+import com.indoornav.ui.theme.Shelf_Fill
 
 @Composable
 fun FloorPlanLayout(rows: Int,
@@ -51,8 +54,8 @@ fun FloorPlanLayout(rows: Int,
                                 Box(
                                     modifier = Modifier
                                         .size(rowSize.dp)
-                                        .background(Color.Yellow.copy(alpha = 0.4f))
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .background(Path_Fill)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
                                     if (isStart(r, c)) {
                                         Icon(
@@ -74,8 +77,8 @@ fun FloorPlanLayout(rows: Int,
                                 Box(
                                     modifier = Modifier
                                         .size(rowSize.dp)
-                                        .background(Color.Gray)
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .background(Shelf_Fill)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
                                 }
                             } else {
@@ -83,7 +86,7 @@ fun FloorPlanLayout(rows: Int,
                                     modifier = Modifier
                                         .size(rowSize.dp)
                                         .background(Color.White)
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
                                     if (isStart(r, c)) {
                                         Icon(
