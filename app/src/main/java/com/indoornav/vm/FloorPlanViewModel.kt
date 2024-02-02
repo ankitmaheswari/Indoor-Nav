@@ -111,8 +111,8 @@ class FloorPlanViewModel: ViewModel() {
         if (row == 2 && column == 1) {
             return "10% Off"
         }
-        if (row == 4 && column == 4) {
-            return "11% Off"
+        if (row == 2 && column == 4) {
+            return "20% Off"
         }
         return null
     }

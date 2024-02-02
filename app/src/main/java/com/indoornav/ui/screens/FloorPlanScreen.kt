@@ -118,8 +118,8 @@ fun FloorPlanScreen(
                                     showDialog = true
                                     popToBackStack = false
                                 }
-                                if (row == 4 && column == 4) {
-                                    dialogMessage = "11% Off on Wafer"
+                                if (row == 2 && column == 4) {
+                                    dialogMessage = "20% Off on Wafer"
                                     showDialog = true
                                     popToBackStack = false
                                 }
