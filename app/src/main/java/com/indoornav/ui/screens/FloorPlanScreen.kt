@@ -9,16 +9,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +32,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.window.Dialog
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.indoornav.R
 import com.indoornav.vm.FloorPlanViewModel
 import com.indoornav.vm.ScreenState
 
@@ -166,22 +175,30 @@ fun FloorPlanScreen(
             }
 
             else -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(Color.White)
-                ) {
-                    Text(
-                        "Please wait, while we fetch the floor plan",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center),
-                        fontSize = 16.sp,
-                        color = Color.Blue
-                    )
-                }
+                ProgressAnimationDialog(true)
             }
         }
     }
 
+}
+
+@Composable
+fun ProgressAnimationDialog(isShowing: Boolean) {
+    if (isShowing) {
+        Dialog(onDismissRequest = { /* Dismiss the dialog */ }) {
+            Surface(
+                modifier = Modifier.width(280.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
+                    LottieAnimation(composition, iterations = LottieConstants.IterateForever,)
+                }
+            }
+        }
+    }
 }
