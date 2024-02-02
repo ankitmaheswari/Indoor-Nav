@@ -94,8 +94,8 @@ fun CustomerStoreScreen(
     var selectedProductId by remember {
         mutableStateOf<String?>(null)
     }
-    val productList by remember {
-        mutableStateOf(arrayListOf<Product>())
+    var productList by remember {
+        mutableStateOf(listOf<Product>())
     }
     var store by remember {
         mutableStateOf<Store?>(null)
@@ -127,21 +127,23 @@ fun CustomerStoreScreen(
     var loader by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = Unit, block = {
+    LaunchedEffect(key1 = productDatabase, block = {
         loader = true
         productDatabase.get().addOnSuccessListener {
             val productListType = object : TypeToken<List<Product>>() {}.type
-            productList.clear()
-            productList.addAll(
-                gson.fromJson<List<Product>>(
-                    gson.toJson(ArrayList((it.getValue() as HashMap<String, HashMap<*, *>>).values)),
-                    productListType
-                )
+            productList = gson.fromJson<List<Product>>(
+                gson.toJson(ArrayList((it.getValue() as HashMap<String, HashMap<*, *>>).values)),
+                productListType
             )
+            Log.d("CustomerStoreScreen", productList.toString())
             loader = false
         }.addOnFailureListener {
-            Log.e("firebase", "Error getting data", it)
-            Toast.makeText(context, "Some Error Occured", Toast.LENGTH_SHORT).show()
+            Log.e("CustomerStoreScreen", "Error getting data", it)
+            Toast.makeText(context, "Some Error Occurred", Toast.LENGTH_SHORT).show()
+            loader = false
+        }.addOnCanceledListener {
+            Log.e("CustomerStoreScreen", "Error getting data")
+            Toast.makeText(context, "Some Error Occurred", Toast.LENGTH_SHORT).show()
             loader = false
         }
     })
@@ -150,11 +152,6 @@ fun CustomerStoreScreen(
 
     Scaffold(
         topBar = {
-/*            Column {
-                GenericTopBar() {
-                    navController.popBackStack()
-                }
-            }*/
         },
         bottomBar = {
             Footer {
@@ -170,43 +167,63 @@ fun CustomerStoreScreen(
                 )
             }
         }) { outerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .padding(outerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
+            StoreHeaderCard(navController, store)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
 
-            item {
-                ProgressDialog(loader, message = "Please wait...")
-            }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    //  horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    StoreHeaderCard(navController, store)
+                item {
+                    ProgressDialog(loader, message = "Please wait...")
                 }
 
-            }
-            item {
-                Text(text = "Choose the item to locate", modifier = Modifier.padding(start = 16.dp))
-                CategoryHeaderTab()
-            }
-
-            items(productList, key = { item -> item.productId }) { product ->
-                StoreItemCard(product, {
-                    selectedProductId = it
-                }) {
-                    selectedProductId == it
+                item {
+                    Spacer(modifier = Modifier.height(150.dp))
                 }
+                item {
+                    Text(
+                        text = "Choose the item to locate",
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    CategoryHeaderTab()
+                }
+
+                if(productList.isNotEmpty()) {
+                    item {
+                        StoreItemCard(productList.get(0), {
+                            selectedProductId = it
+                        }) {
+                            selectedProductId == it
+                        }
+                    }
+                }
+                productList.forEach { product ->
+                    item {
+                        StoreItemCard(product, {
+                            selectedProductId = it
+                        }) {
+                            selectedProductId == it
+                        }
+                    }
+                }
+
+//                items(productList, key = { item -> item.productId }) { product ->
+//                    StoreItemCard(product, {
+//                        selectedProductId = it
+//                    }) {
+//                        selectedProductId == it
+//                    }
+//                }
+
+
             }
-
-
         }
+
     }
 }
 
@@ -274,23 +291,19 @@ fun CategoryPillItem(
 private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp),
-       // contentAlignment = Alignment.CenterStart
+            .fillMaxWidth(),
     ) {
         GenericTopBar {
             navController.popBackStack()
-
         }
         // PNG image as the background
         Image(
             painter = painterResource(id = R.drawable.background_green), // Replace with your image resource
             contentDescription = "Background Image",
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .alpha(0.5f)
-                .align(Alignment.Center)// Adjust the alpha as needed
         )
 
         // Content of the Column
@@ -368,9 +381,11 @@ private fun StoreItemCard(
     isSelected: (String) -> Boolean
 ) {
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 16.dp)
@@ -386,13 +401,17 @@ private fun StoreItemCard(
                 )
                 Column(Modifier.padding(start = 16.dp)) {
                     Text(text = product.name)
-                    Text(text = "₹ ${product.mrpInPaisa}", modifier = Modifier.padding(vertical = 8.dp))
+                    Text(
+                        text = "₹ ${product.mrpInPaisa}",
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
                 }
             }
             Box(Modifier.fillMaxWidth()) {
-                RadioButton(selected = isSelected(product.productId), onClick = {
-                    onProductSelected(product.productId)
-                }, modifier = Modifier.align(Alignment.CenterEnd)
+                RadioButton(
+                    selected = isSelected(product.productId), onClick = {
+                        onProductSelected(product.productId)
+                    }, modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
 
