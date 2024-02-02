@@ -281,7 +281,7 @@ fun CategoryPillItem(
         Icon(
             painter = painterResource(id = currentTab.icon),
             tint = Color.Unspecified,
-            contentDescription = null
+            contentDescription = null,
         )
         Text(
             text = currentTab.categoryName,

@@ -1,14 +1,17 @@
 package com.indoornav.business.store
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -82,8 +85,9 @@ fun StoreActionOptionsScreen(
                             painter = painterResource(id = R.drawable.ic_store),
                             contentDescription = null,
                             modifier = Modifier.size(120.dp),
+                            tint = Color.Unspecified
                         )
-                        Text(text = (store?.name + (if (floor?.floorNumber != null) (" " + floor!!.floorNumber.toString() + " floor") else "")) , style = TextStyle(fontSize = 24.sp))
+                        Text(text = ((store?.name?: "") + (if (floor?.floorNumber != null) (" " + floor!!.floorNumber.toString() + " floor") else "")) , style = TextStyle(fontSize = 24.sp))
                         Text(text = "Inventory Management", style = TextStyle(fontSize = 16.sp))
                     }
 
@@ -120,6 +124,30 @@ fun StoreActionOptionsScreen(
                     Text("Map Product To a Tag")
                 }
             }
+
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.left_arrow),
+                        modifier = Modifier
+                            .padding(end =12.dp )
+                            .height(24.dp)
+                            .width(24.dp).clickable {
+                                navController.popBackStack()
+                            }                 ,
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+
+                }
+
+            }
+
         }
 
 

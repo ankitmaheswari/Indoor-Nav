@@ -4,14 +4,17 @@ import android.nfc.Tag
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -86,7 +89,9 @@ fun MapTagToRackScreen(
                                 painter = painterResource(id = R.drawable.ic_tag),
                                 contentDescription = null,
                                 modifier = Modifier.size(120.dp),
+                                tint = Color.Unspecified
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(text = "Map Tag to Rack", style = TextStyle(fontSize = 24.sp))
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
@@ -128,7 +133,7 @@ fun MapTagToRackScreen(
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(100.dp))
+                    Spacer(modifier = Modifier.height(60.dp))
 
                     Button(
                         onClick = {
@@ -188,6 +193,29 @@ fun MapTagToRackScreen(
                         Text(text = "Map tag to rack")
                     }
                 }
+            }
+
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.left_arrow),
+                        modifier = Modifier
+                            .padding(end =12.dp )
+                            .height(24.dp)
+                            .width(24.dp).clickable {
+                                navController.popBackStack()
+                            }                 ,
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+
+                }
+
             }
         }
 

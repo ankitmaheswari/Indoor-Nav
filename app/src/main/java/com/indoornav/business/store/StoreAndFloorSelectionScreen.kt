@@ -102,10 +102,10 @@ fun StoreAndFloorSelectionScreen(
                 .fillMaxWidth(),
         ) {
 
+
             Box(modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.BottomCenter), contentAlignment = Alignment.BottomCenter) {
-
                 Text(text = "Add New Store", color = Color(0xFF2b9ccc), modifier = Modifier.padding(16.dp).clickable {
                     navController.navigate(NavigationRoute.CREATE_STORE)
                 })
@@ -120,6 +120,7 @@ fun StoreAndFloorSelectionScreen(
                             painter = painterResource(id = R.drawable.ic_store),
                             contentDescription = null,
                             modifier = Modifier.size(120.dp),
+                            tint = Color.Unspecified
                         )
                         Text(text = "Inventory Management", style = TextStyle(fontSize = 32.sp))
                     }
@@ -216,5 +217,29 @@ fun StoreAndFloorSelectionScreen(
 
             }
 
-    }
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.left_arrow),
+                        modifier = Modifier
+                            .padding(end =12.dp )
+                            .height(24.dp)
+                            .width(24.dp).clickable {
+                                navController.popBackStack()
+                            }                 ,
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+
+                }
+
+            }
+
+
+        }
 }
