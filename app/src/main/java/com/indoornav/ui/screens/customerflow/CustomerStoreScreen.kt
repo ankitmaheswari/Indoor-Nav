@@ -23,10 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -35,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -103,6 +102,15 @@ fun CustomerStoreScreen(
     var floor by remember {
         mutableStateOf<FloorPlan?>(null)
     }
+    var selectedTab by remember {
+        mutableIntStateOf(0)
+    }
+
+/*    val filteredProductList = remember(selectedTab, productList) {
+        filteredOrdersByType(selectedTab, productList)
+    }*/
+
+
 
     LaunchedEffect(key1 = qrResponse, block = {
         qrResponse?.let {
@@ -190,16 +198,24 @@ fun CustomerStoreScreen(
                         text = "Choose the item to locate",
                         modifier = Modifier.padding(start = 16.dp)
                     )
-                    CategoryHeaderTab()
-                }
-
-                items(productList, key = { item -> item.productId }) { product ->
-                    StoreItemCard(product, {
-                        selectedProductId = it
-                    }) {
-                        selectedProductId == it
+                    CategoryHeaderTab(selectedTab){
+                        selectedTab = it
                     }
                 }
+                if (selectedTab == 0){
+                    items(productList, key = { item -> item.productId }) { product ->
+                        StoreItemCard(product, {
+                            selectedProductId = it
+                        }) {
+                            selectedProductId == it
+                        }
+                    }
+                } else {
+                    item {
+                        NoItemFound()
+                    }
+                }
+
 
 
             }
@@ -209,9 +225,13 @@ fun CustomerStoreScreen(
 }
 
 @Composable
-private fun CategoryHeaderTab() {
+private fun CategoryHeaderTab(
+    selectedTabId : Int,
+    onSelectedCategoryClick: (Int) -> Unit,
+    ) {
     val tabs = getCategoryTabList()
-    val selectedTab = tabs[0]
+    val selectedTab = tabs[selectedTabId]
+
     Column {
         LazyRow(
             contentPadding = PaddingValues(16.dp),
@@ -222,7 +242,8 @@ private fun CategoryHeaderTab() {
                     CategoryPillItem(
                         currentTab = it,
                         selectedTab = selectedTab,
-                        onOrderTabClick = {},
+                        onSelectedCategoryClick = { id ->
+                            onSelectedCategoryClick(id)},
                     )
                 }
             }
@@ -235,7 +256,7 @@ private fun CategoryHeaderTab() {
 fun CategoryPillItem(
     currentTab: CategoryTabData,
     selectedTab: CategoryTabData,
-    onOrderTabClick: (CategoryTabData) -> Unit,
+    onSelectedCategoryClick: (Int) -> Unit,
 ) {
 
     val borderColor =
@@ -243,7 +264,7 @@ fun CategoryPillItem(
     Row(
         modifier = Modifier
             .padding(start = 4.dp)
-            .clickable { onOrderTabClick(currentTab) }
+            .clickable { onSelectedCategoryClick(currentTab.id) }
             .border(
                 1.dp,
                 borderColor,
@@ -403,10 +424,10 @@ private fun StoreItemCard(
 
 private fun getCategoryTabList(): List<CategoryTabData> {
     return listOf(
-        CategoryTabData("Food", R.drawable.ic_store),
-        CategoryTabData("Grocery", R.drawable.ic_store),
-        CategoryTabData("Electronics", R.drawable.ic_store),
-        CategoryTabData("Utility", R.drawable.ic_store),
+        CategoryTabData(0,"Food", R.drawable.ic_store),
+        CategoryTabData(1,"Grocery", R.drawable.ic_store),
+        CategoryTabData(2,"Electronics", R.drawable.ic_store),
+        CategoryTabData(3,"Utility", R.drawable.ic_store),
     )
 }
 
@@ -428,6 +449,23 @@ fun ProgressDialog(isShowing: Boolean, message: String) {
             }
         }
     }
+}
+
+@Composable
+private fun NoItemFound(){
+Column(modifier = Modifier
+    .fillMaxSize()
+    .padding(16.dp),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    Image(painter = painterResource(id = R.drawable.no_item_found), contentDescription = null, modifier = Modifier
+        .height(50.dp)
+        .width(50.dp))
+
+    Text(text = "No Item Found for this Category", modifier = Modifier.padding(vertical = 16.dp), fontSize = 16.sp)
+
+}
 }
 
 
