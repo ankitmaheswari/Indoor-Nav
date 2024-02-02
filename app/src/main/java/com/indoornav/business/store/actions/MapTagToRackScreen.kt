@@ -161,6 +161,7 @@ fun MapTagToRackScreen(
                     """.trimIndent(), context
                             ) {
                                 if (it) {
+                                    try {
                                     tagMappingDatabase.child(tagMapping.tagId).setValue(tagMapping)
                                         .addOnSuccessListener {
                                             Toast.makeText(
@@ -176,6 +177,13 @@ fun MapTagToRackScreen(
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
+                                    } catch (e: Exception) {e.printStackTrace()
+                                        Toast.makeText(
+                                            context,
+                                            "Some Error occurred!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 } else {
                                     tag.value = null
                                     Toast.makeText(
