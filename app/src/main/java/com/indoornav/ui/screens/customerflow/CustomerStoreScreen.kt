@@ -45,6 +45,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -303,7 +304,9 @@ fun CategoryPillItem(
     ) {
         Icon(
             painter = painterResource(id = currentTab.icon),
-            modifier = Modifier.width(24.dp).height(24.dp),
+            modifier = Modifier
+                .width(24.dp)
+                .height(24.dp),
             tint = Color.Unspecified,
             contentDescription = null,
         )
@@ -407,10 +410,18 @@ private fun StoreItemCard(
                 )
                 Column(Modifier.padding(start = 16.dp)) {
                     Text(text = product.name)
-                    Text(
-                        text = getPrice(product.mrpInPaisa),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    Row {
+                        Text(
+                            text = getPrice(product.priceInPaisa),
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(
+                            text = getPrice(product.mrpInPaisa),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                    }
+
                 }
             }
             Box(Modifier.fillMaxWidth()) {
@@ -457,7 +468,7 @@ fun ProgressDialog(isShowing: Boolean, message: String) {
 
 private fun getPrice(priceInPaisa : Int) : String{
     val priceInRupees = priceInPaisa/100
-    return "₹ $priceInRupees"
+    return "₹$priceInRupees"
 }
 
 @Composable
