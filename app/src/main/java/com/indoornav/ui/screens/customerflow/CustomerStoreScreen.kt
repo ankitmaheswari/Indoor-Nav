@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -55,6 +56,7 @@ import com.indoornav.util.StringUtil
 
 
 data class QRResponse(val storeId: String, val floorId: String, val cord: Coordinate)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomerStoreScreen(
@@ -75,7 +77,7 @@ fun CustomerStoreScreen(
             Log.d("qr", qr)
             qrResponse =
                 gson.fromJson(qr, QRResponse::class.java)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -100,12 +102,12 @@ fun CustomerStoreScreen(
                 store?.let {
                     try {
                         floor = gson.fromJson(
-                            gson.toJson(it.floorPlan?.get(qrResponse?.floorId?: "") ?: "{}"),
+                            gson.toJson(it.floorPlan?.get(qrResponse?.floorId ?: "") ?: "{}"),
                             FloorPlan::class.java
                         )
                     } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                        e.printStackTrace()
+                    }
                 }
             }
         }
@@ -132,37 +134,52 @@ fun CustomerStoreScreen(
 
     Scaffold(
         topBar = {
-            Column {
+/*            Column {
                 GenericTopBar() {
                     navController.popBackStack()
                 }
-            }
+            }*/
         },
         bottomBar = {
             Footer {
                 if (selectedProductId == null) {
                     return@Footer
                 }
-               navController.navigate(NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
-                   .replace("{floorId}", qrResponse!!.floorId)
-                   .replace("{productId}", selectedProductId.toString())
-                   .replace("{row}", qrResponse!!.cord.rowId.toString())
-                   .replace("{col}", qrResponse!!.cord.colId.toString()))
+                navController.navigate(
+                    NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
+                        .replace("{floorId}", qrResponse!!.floorId)
+                        .replace("{productId}", selectedProductId.toString())
+                        .replace("{row}", qrResponse!!.cord.rowId.toString())
+                        .replace("{col}", qrResponse!!.cord.colId.toString())
+                )
             }
         }) { outerPadding ->
         LazyColumn(
             modifier = Modifier
-                .padding(outerPadding)
+               // .offset(y = -16.dp)
+                //.padding(outerPadding)
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            //   horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    //  horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                StoreHeaderCard(navController, store)
-                Text(text = "Choose the item to locate")
+                    GenericTopBar {
+                        navController.popBackStack()
+
+                    }
+                    StoreHeaderCard(navController, store)
+                }
+
             }
             item {
-              CategoryHeaderTab()
+                Text(text = "Choose the item to locate", modifier = Modifier.padding(start = 16.dp))
+                CategoryHeaderTab()
             }
 
             items(productList.size) { item ->
@@ -170,7 +187,7 @@ fun CustomerStoreScreen(
 
             productList.forEach { product ->
                 item {
-                    StoreItemCard(product){
+                    StoreItemCard(product) {
                         selectedProductId = it
                     }
                 }
@@ -182,7 +199,7 @@ fun CustomerStoreScreen(
 }
 
 @Composable
-private fun CategoryHeaderTab(){
+private fun CategoryHeaderTab() {
     val tabs = getCategoryTabList()
     val selectedTab = tabs[0]
     Column {
@@ -212,12 +229,10 @@ fun CategoryPillItem(
 ) {
 
     val borderColor =
-        if (currentTab == selectedTab) Color(0x44A037) else Color(0xE3E3E3)
-    Text(
-        text = currentTab.categoryName,
-        color = Color.Black,
-        fontSize = 14.sp,
+        if (currentTab == selectedTab) Color(0xFF44A037) else Color(0xFFE3E3E3)
+    Row(
         modifier = Modifier
+            .padding(start = 4.dp)
             .clickable { onOrderTabClick(currentTab) }
             .border(
                 1.dp,
@@ -229,14 +244,26 @@ fun CategoryPillItem(
                 RoundedCornerShape(8.dp)
             )
             .padding(16.dp),
-    )
+    ) {
+        Icon(
+            painter = painterResource(id = currentTab.icon),
+            tint = Color.Unspecified,
+            contentDescription = null
+        )
+        Text(
+            text = currentTab.categoryName,
+            color = Color.Black,
+            fontSize = 14.sp,
+        )
+    }
 }
 
 @Composable
 private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(top = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         // PNG image as the background
@@ -253,12 +280,10 @@ private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GenericTopBar {
-                navController.popBackStack()
 
-            }
             Image(
                 painter = painterResource(id = R.drawable.store),
                 contentDescription = null,
@@ -283,62 +308,83 @@ private fun StoreHeaderCard(navController: NavHostController, store: Store?) {
 private fun Footer(onClick: () -> Unit) {
     Row(
         modifier = Modifier
-            .background(
-                color = Color.Green,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .fillMaxWidth()
-            .clickable { onClick() }
             .padding(
                 horizontal = 12.dp,
                 vertical = 16.dp
-            ),
+            )
+            .fillMaxWidth()
+
+            .background(
+                color = Color(0xff44A037),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(id = R.drawable.direction),
-            modifier = Modifier.padding(end = 4.dp),
+            modifier = Modifier.padding(end = 4.dp).height(20.dp).width(20.dp),
             tint = Color.Unspecified,
             contentDescription = null
         )
-    }
-    Text(
-        text = "Find this Item",
-        color = Color.White,
-        fontSize = 16.sp,
-        maxLines = 1
-    )
 
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = "Find this Item",
+            color = Color.White,
+            fontSize = 16.sp,
+            maxLines = 1
+        )
+    }
 
 }
 
 @Composable
 private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit) {
-    val isSelected by remember { mutableStateOf(false) }
-    Row {
-        Image(painter = painterResource(id = R.drawable.burger), contentDescription = null)
-        Column {
-            Text(text = product.name)
-            Text(text = "₹ ${product.mrpInPaisa}")
-        }
-        RadioButton(selected = isSelected, onClick = {
-            if (isSelected){
-                onProductSelected(product.productId)
+    var isSelected by remember { mutableStateOf(false) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.burger),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(54.dp)
+                    .width(54.dp)
+            )
+            Column(Modifier.padding(start = 16.dp)) {
+                Text(text = product.name)
+                Text(text = "₹ ${product.mrpInPaisa}", modifier = Modifier.padding(vertical = 8.dp))
             }
+            RadioButton(
+                modifier = Modifier.padding(start = 8.dp),
+                selected = isSelected,
+                onClick = {
+                    isSelected = !isSelected
+                    if (isSelected) {
+                        onProductSelected(product.productId)
+                    }
 
-        })
+                })
+        }
+        Divider()
     }
 }
 
-private fun getCategoryTabList(): List<CategoryTabData>{
-return listOf(
-    CategoryTabData("Snacks",R.drawable.ic_store),
-    CategoryTabData("Vegies",R.drawable.ic_store),
-    CategoryTabData("Bakery",R.drawable.ic_store),
-    CategoryTabData("Meat",R.drawable.ic_store),
-    CategoryTabData("Masala",R.drawable.ic_store),
-    CategoryTabData("Bevereges",R.drawable.ic_store),
-)
+private fun getCategoryTabList(): List<CategoryTabData> {
+    return listOf(
+        CategoryTabData("Snacks", R.drawable.ic_store),
+        CategoryTabData("Vegies", R.drawable.ic_store),
+        CategoryTabData("Bakery", R.drawable.ic_store),
+        CategoryTabData("Meat", R.drawable.ic_store),
+        CategoryTabData("Masala", R.drawable.ic_store),
+        CategoryTabData("Bevereges", R.drawable.ic_store),
+    )
 }
 
