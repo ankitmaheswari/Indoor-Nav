@@ -260,22 +260,30 @@ fun MapProductToTagScreen(
                                 productId = selectedProduct!!.productId,
                                 tagId, productCount
                             )
-                            productPlacementDatabase.child(productPosition.productId)
-                                .setValue(productPosition)
-                                .addOnSuccessListener {
-                                    Toast.makeText(
-                                        context,
-                                        "Product mapped to rack Successfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    navController.popBackStack()
-                                }.addOnFailureListener {
-                                    Toast.makeText(
-                                        context,
-                                        "Some Error occurred!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                            try {
+                                productPlacementDatabase.child(productPosition.productId)
+                                    .setValue(productPosition)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            context,
+                                            "Product mapped to rack Successfully!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        navController.popBackStack()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            context,
+                                            "Some Error occurred!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            } catch (e: Exception) {e.printStackTrace()
+                                Toast.makeText(
+                                    context,
+                                    "Some Error occurred!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
                         }, modifier = Modifier.fillMaxWidth().padding(16.dp).height(64.dp).clip(
                             RoundedCornerShape(16.dp)
