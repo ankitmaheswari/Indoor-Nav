@@ -66,8 +66,8 @@ fun NavigationGraph(
                 navArgument("storeId") { defaultValue = "" },
                 navArgument("floorId") { defaultValue = "" },
                 navArgument("productId") { defaultValue = "" },
-                navArgument("startX") { defaultValue = 0 },
-                navArgument("startY") { defaultValue = 0 },
+                navArgument("row") { defaultValue = 0 },
+                navArgument("column") { defaultValue = 0 },
             ),
             enterTransition = { EnterTransition.None }
         ) {
@@ -77,8 +77,8 @@ fun NavigationGraph(
                 it.arguments?.getString("storeId")!!,
                 it.arguments!!.getString("floorId")!!,
                 it.arguments!!.getString("productId")!!,
-                it.arguments!!.getInt("startX"),
-                it.arguments!!.getInt("startY")
+                it.arguments!!.getInt("row"),
+                it.arguments!!.getInt("column")
             )
         }
 

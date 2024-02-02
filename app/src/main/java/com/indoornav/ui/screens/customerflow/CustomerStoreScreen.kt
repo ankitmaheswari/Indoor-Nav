@@ -70,17 +70,18 @@ fun CustomerStoreScreen(
     var qrResponse by remember {
         mutableStateOf<QRResponse?>(null)
     }
-    if (qrValue.isNotEmpty()) {
-        var qr = StringUtil.getBase64DecodedString(qrValue)!!
-        try {
-            qr = qr.substring(qr.indexOf(" ")).trim()
-            Log.d("qr", qr)
-            qrResponse =
-                gson.fromJson(qr, QRResponse::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    LaunchedEffect(key1 = qrValue) {
+        if (qrValue.isNotEmpty()) {
+            var qr = StringUtil.getBase64DecodedString(qrValue)!!
+            try {
+                qr = qr.substring(qr.indexOf(" ")).trim()
+                Log.d("qr", qr)
+                qrResponse =
+                    gson.fromJson(qr, QRResponse::class.java)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
-
     }
     var selectedProductId by remember {
         mutableStateOf<String?>(null)
@@ -145,13 +146,11 @@ fun CustomerStoreScreen(
                 if (selectedProductId == null) {
                     return@Footer
                 }
-                navController.navigate(
-                    NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
-                        .replace("{floorId}", qrResponse!!.floorId)
-                        .replace("{productId}", selectedProductId.toString())
-                        .replace("{row}", qrResponse!!.cord.rowId.toString())
-                        .replace("{col}", qrResponse!!.cord.colId.toString())
-                )
+               navController.navigate(NavigationRoute.FLOOR_PLAN.replace("{storeId}", qrResponse!!.storeId)
+                   .replace("{floorId}", qrResponse!!.floorId)
+                   .replace("{productId}", selectedProductId.toString())
+                   .replace("{row}", qrResponse!!.cord.rowId.toString())
+                   .replace("{column}", qrResponse!!.cord.colId.toString()))
             }
         }) { outerPadding ->
         LazyColumn(
@@ -187,8 +186,10 @@ fun CustomerStoreScreen(
 
             productList.forEach { product ->
                 item {
-                    StoreItemCard(product) {
+                    StoreItemCard(product, {
                         selectedProductId = it
+                    }) {
+                        selectedProductId == it
                     }
                 }
             }
@@ -342,8 +343,10 @@ private fun Footer(onClick: () -> Unit) {
 }
 
 @Composable
-private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit) {
-    var isSelected by remember { mutableStateOf(false) }
+private fun StoreItemCard(product: Product,
+                          onProductSelected: (String) -> Unit,
+                          isSelected: (String) -> Boolean) {
+
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = Modifier
@@ -362,17 +365,12 @@ private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit)
                 Text(text = product.name)
                 Text(text = "₹ ${product.mrpInPaisa}", modifier = Modifier.padding(vertical = 8.dp))
             }
-            RadioButton(
-                modifier = Modifier.padding(start = 8.dp),
-                selected = isSelected,
-                onClick = {
-                    isSelected = !isSelected
-                    if (isSelected) {
-                        onProductSelected(product.productId)
-                    }
+        RadioButton(selected = isSelected(product.productId), onClick = {
+                onProductSelected(product.productId)
+            }
 
-                })
         }
+        )
         Divider()
     }
 }
