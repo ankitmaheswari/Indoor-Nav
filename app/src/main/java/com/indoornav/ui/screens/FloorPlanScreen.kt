@@ -3,7 +3,6 @@ package com.indoornav.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,10 +68,17 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
                         columns = columns,
                         hasShelf = { row, column ->
                             return@FloorPlanLayout floorPlanViewModel.hasShelf(row, column)
+                        },
+                        isInPath = { row, column ->
+                            return@FloorPlanLayout floorPlanViewModel.isInPath(row, column)
+                        },
+                        isStart = { row, column ->
+                            return@FloorPlanLayout row == startRow && column == startColumn
+                        },
+                        isDestination = { row, column ->
+                            return@FloorPlanLayout floorPlanViewModel.isDestination(row, column)
                         }
-                    ) { row, column ->
-                        return@FloorPlanLayout floorPlanViewModel.isInPath(row, column)
-                    }
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -88,7 +94,7 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
                             },
                             enabled = false
                         ) {
-                            Text(text = "Fetching Path")
+                            Text(text = "Finding Path")
                         }
                     } else {
 
@@ -107,7 +113,7 @@ fun FloorPlanScreen(floorPlanViewModel: FloorPlanViewModel,
                                 )
                             }
                         ) {
-                            Text(text = "Fetch Path")
+                            Text(text = "Find Path")
                         }
                     }
 

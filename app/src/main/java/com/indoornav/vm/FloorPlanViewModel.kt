@@ -26,6 +26,8 @@ class FloorPlanViewModel: ViewModel() {
     private var floorPlan: Array<Array<Int>>? = null
     private var shortestPath: ArrayList<ArrayList<Int>>? = null
     private var productDetails: ProductWithPosition? = null
+    private var destinationRow: Int? = null
+    private var destinationColumn: Int? = null
 
     fun getFloorPlan(storeId: String, floorId: String) {
         viewModelScope.launch {
@@ -55,8 +57,12 @@ class FloorPlanViewModel: ViewModel() {
                     val rackRow = rackId[0].digitToInt()
                     val rackColumn = rackId[1].digitToInt()
                     val dest: Array<Int> = if (!hasShelf(rackRow, rackColumn-1)) {
+                        destinationRow = rackRow
+                        destinationColumn = rackColumn - 1
                         arrayOf(rackRow, rackColumn-1)
                     } else {
+                        destinationRow = rackRow
+                        destinationColumn = rackColumn + 1
                         arrayOf(rackRow, rackColumn+1)
                     }
                     val arrayList = ArrayList<ArrayList<Int>>()
@@ -96,6 +102,10 @@ class FloorPlanViewModel: ViewModel() {
             return shortestPath?.firstOrNull { it[0] == row && it[1] == column } != null
         }
         return false
+    }
+
+    fun isDestination(row: Int, column: Int): Boolean {
+        return row == destinationRow && column == destinationColumn
     }
 }
 
