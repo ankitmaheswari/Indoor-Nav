@@ -25,8 +25,9 @@ fun GenericTopBar(
     Column {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+                .padding(12.dp).clickable {
+                    onBackButtonClick()
+                },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -34,10 +35,7 @@ fun GenericTopBar(
                 modifier = Modifier
                     .padding(end =12.dp )
                     .height(24.dp)
-                    .width(24.dp)
-                    .clickable {
-                        onBackButtonClick()
-                    },
+                    .width(24.dp)                 ,
                 tint = Color.Unspecified,
                 contentDescription = null
             )

@@ -11,8 +11,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -59,9 +61,7 @@ import com.indoornav.util.StringUtil
     Scaffold(
         topBar = {
             Column {
-                GenericTopBar() {
-                    navController.popBackStack()
-                }
+
             }
         },
         bottomBar = {
@@ -73,22 +73,28 @@ import com.indoornav.util.StringUtil
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.White, Color.Green),
+                        colors = listOf(Color.White, Color(0xFFADE582)),
                         startY = 0f,
                         endY = Float.POSITIVE_INFINITY
                     )
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-            Text(text ="Introducing", fontSize = 16.sp, modifier = Modifier.padding(vertical = 8.dp) )
-            Text(text = "Right Pick",fontSize = 40.sp, modifier = Modifier.padding(vertical = 8.dp))
-            Text(text = "Your instore assistant",fontSize = 16.sp, modifier = Modifier.padding(vertical = 8.dp), color = colorResource(R.color.purple_200))
+            Box(Modifier.fillMaxWidth()) {
+                GenericTopBar() {
+                    navController.popBackStack()
+                }
+            }
+            Text(text ="Introducing", fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp) )
+            Text(text = "Insta Spot",fontSize = 40.sp, modifier = Modifier.padding(vertical = 4.dp))
+            Text(text = "Your instore assistant",fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp), color = colorResource(R.color.purple_200))
             Image(painter = painterResource(id =R.drawable.phone_image), contentDescription = null, modifier = Modifier
                 .padding(vertical = 8.dp)
                 .height(360.dp)
                 .width(341.dp))
-            Icon(painter = painterResource(id = R.drawable.scan), contentDescription = null, modifier = Modifier.clickable {
+            Icon(painter = painterResource(id = R.drawable.scan),
+                tint = Color.Unspecified,
+                contentDescription = null, modifier = Modifier.clickable {
                 launcher.launch(createIntentSenderRequest(context))
             } )
         }
