@@ -26,14 +26,16 @@ class FloorPlanViewModel: ViewModel() {
     private var floorPlan: Array<Array<Int>>? = null
     private var shortestPath: ArrayList<ArrayList<Int>>? = null
     private var productDetails: ProductWithPosition? = null
+    private var destinationRow: Int? = null
+    private var destinationColumn: Int? = null
 
-    fun getFloorPlan(storeId: String, floorId: String) {
+    fun getFloorPlan(start: Array<Int>, storeId: String, floorId: String, productId: String) {
         viewModelScope.launch {
             _screenState.value = ScreenState.LOADING
             storeRepository.findStoreLayout(storeId, floorId).collectLatest {
                 if (it != null) {
                     floorPlan = it
-                    _screenState.value = ScreenState.SUCCESS
+                    getShortestPath(start, productId, storeId)
                 }
             }
         }
@@ -44,7 +46,6 @@ class FloorPlanViewModel: ViewModel() {
     }
 
     fun getShortestPath(start: Array<Int>, productId: String, storeId: String) {
-        /*_screenState.value = ScreenState.LOADING*/
         _isPathFetched.value = false
         viewModelScope.launch(Dispatchers.IO) {
             val productWithPosition = storeRepository.getProductDetails(storeId, productId)
@@ -55,8 +56,12 @@ class FloorPlanViewModel: ViewModel() {
                     val rackRow = rackId[0].digitToInt()
                     val rackColumn = rackId[1].digitToInt()
                     val dest: Array<Int> = if (!hasShelf(rackRow, rackColumn-1)) {
+                        destinationRow = rackRow
+                        destinationColumn = rackColumn - 1
                         arrayOf(rackRow, rackColumn-1)
                     } else {
+                        destinationRow = rackRow
+                        destinationColumn = rackColumn + 1
                         arrayOf(rackRow, rackColumn+1)
                     }
                     val arrayList = ArrayList<ArrayList<Int>>()
@@ -74,8 +79,8 @@ class FloorPlanViewModel: ViewModel() {
                         Log.d("Shortest Path", "$shortestPathFound")
                         shortestPath = shortestPathFound
                     }
-                    /*_screenState.value = ScreenState.SUCCESS*/
                     _isPathFetched.value = true
+                    _screenState.value = ScreenState.SUCCESS
                 }
             }
         }
@@ -96,6 +101,10 @@ class FloorPlanViewModel: ViewModel() {
             return shortestPath?.firstOrNull { it[0] == row && it[1] == column } != null
         }
         return false
+    }
+
+    fun isDestination(row: Int, column: Int): Boolean {
+        return row == destinationRow && column == destinationColumn
     }
 }
 

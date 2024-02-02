@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -91,7 +92,8 @@ fun CoordinateInputArray(
                 IconButton(onClick = { onDelete(coordinate) }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
-                        contentDescription = "Delete"
+                        contentDescription = "Delete",
+                        tint = Color.Unspecified
                     )
                 }
             }
@@ -145,7 +147,8 @@ fun CoordinateInputArray(
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
+                    contentDescription = "Add",
+                    tint = Color.Unspecified
                 )
             }
         }

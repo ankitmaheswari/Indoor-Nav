@@ -73,6 +73,7 @@ fun NavigationGraph(
         ) {
             val vm: FloorPlanViewModel = viewModel()
             FloorPlanScreen(
+                navController,
                 vm,
                 it.arguments?.getString("storeId")!!,
                 it.arguments!!.getString("floorId")!!,

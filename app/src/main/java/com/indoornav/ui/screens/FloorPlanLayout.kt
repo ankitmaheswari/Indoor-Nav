@@ -9,20 +9,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.indoornav.R
+import com.indoornav.ui.theme.Border_Primary
+import com.indoornav.ui.theme.Path_Fill
+import com.indoornav.ui.theme.Shelf_Fill
 
 @Composable
 fun FloorPlanLayout(rows: Int,
                     columns: Int,
                     hasShelf: (Int, Int) -> Boolean,
-                    isInPath: (Int, Int) -> Boolean
+                    isInPath: (Int, Int) -> Boolean,
+                    isStart: (Int, Int) -> Boolean,
+                    isDestination: (Int, Int) -> Boolean
 ) {
     val exteriorPadding = 8.dp
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -48,45 +54,51 @@ fun FloorPlanLayout(rows: Int,
                                 Box(
                                     modifier = Modifier
                                         .size(rowSize.dp)
-                                        .background(Color.Yellow.copy(alpha = 0.4f))
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .background(Path_Fill)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
-                                    Text(
-                                        text = "$r, $c",
-                                        modifier = Modifier.align(Alignment.Center),
-                                        color = Color.Red,
-                                        fontSize = 10.sp
-                                    )
+                                    if (isStart(r, c)) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_start),
+                                            contentDescription = "start",
+                                            modifier = Modifier.align(Alignment.Center),
+                                            tint = Color.Unspecified
+                                        )
+                                    } else if (isDestination(r, c)) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_destination),
+                                            contentDescription = "start",
+                                            modifier = Modifier.align(Alignment.Center),
+                                            tint = Color.Unspecified
+                                        )
+                                    }
                                 }
                             } else if (hasShelf(r, c)) {
                                 Box(
                                     modifier = Modifier
                                         .size(rowSize.dp)
-                                        .background(Color.Gray)
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .background(Shelf_Fill)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
-                                    Text(
-                                        text = "$r, $c",
-                                        modifier = Modifier.align(Alignment.Center),
-                                        color = Color.Red,
-                                        fontSize = 10.sp
-                                    )
                                 }
                             } else {
                                 Box(
                                     modifier = Modifier
                                         .size(rowSize.dp)
                                         .background(Color.White)
-                                        .border(width = 1.dp, color = Color.Blue)
+                                        .border(width = 1.dp, color = Border_Primary)
                                 ) {
-                                    Text(
-                                        text = "$r, $c",
-                                        modifier = Modifier.align(Alignment.Center),
-                                        color = Color.Red,
-                                        fontSize = 10.sp
-                                    )
+                                    if (isStart(r, c)) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_start),
+                                            contentDescription = "start",
+                                            modifier = Modifier.align(Alignment.Center),
+                                            tint = Color.Unspecified
+                                        )
+                                    }
                                 }
                             }
+
                         }
                     }
                 }
