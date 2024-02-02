@@ -303,11 +303,13 @@ fun CategoryPillItem(
     ) {
         Icon(
             painter = painterResource(id = currentTab.icon),
+            modifier = Modifier.width(24.dp).height(24.dp),
             tint = Color.Unspecified,
             contentDescription = null,
         )
         Text(
             text = currentTab.categoryName,
+            modifier = Modifier.padding(start = 4.dp),
             color = Color.Black,
             fontSize = 14.sp,
         )
@@ -406,7 +408,7 @@ private fun StoreItemCard(
                 Column(Modifier.padding(start = 16.dp)) {
                     Text(text = product.name)
                     Text(
-                        text = "₹ ${product.mrpInPaisa}",
+                        text = getPrice(product.mrpInPaisa),
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
@@ -426,10 +428,10 @@ private fun StoreItemCard(
 
 private fun getCategoryTabList(): List<CategoryTabData> {
     return listOf(
-        CategoryTabData(0,"Food", R.drawable.ic_store),
-        CategoryTabData(1,"Grocery", R.drawable.ic_store),
-        CategoryTabData(2,"Electronics", R.drawable.ic_store),
-        CategoryTabData(3,"Utility", R.drawable.ic_store),
+        CategoryTabData(0,"Food", R.drawable.snack),
+        CategoryTabData(1,"Grocery", R.drawable.apple),
+        CategoryTabData(2,"Utility", R.drawable.bakery),
+        CategoryTabData(3,"Electronics", R.drawable.headphones),
     )
 }
 
@@ -451,6 +453,11 @@ fun ProgressDialog(isShowing: Boolean, message: String) {
             }
         }
     }
+}
+
+private fun getPrice(priceInPaisa : Int) : String{
+    val priceInRupees = priceInPaisa/100
+    return "₹ $priceInRupees"
 }
 
 @Composable
