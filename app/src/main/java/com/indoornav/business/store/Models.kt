@@ -1,5 +1,6 @@
 package com.indoornav.business.store
 
+import androidx.annotation.DrawableRes
 import java.util.Objects
 
 
@@ -21,10 +22,12 @@ data class Store(
     val address: String? = null,
     val floorPlan: HashMap<String, Object>? = null
 )
+
 data class Rack(
     val coordinate: Coordinate,
     val shelf: Int
 )
+
 data class FloorPlan(
     val floorId: String,
     val floorNumber: Int,
@@ -32,8 +35,10 @@ data class FloorPlan(
     val rowsCount: Int,
     val columnsCount: Int,
     val shelvesCount: Int,
-    val entry: Coordinate = Coordinate(0,0),
-    val rackMapping: Map<String, Rack>)
+    val entry: Coordinate = Coordinate(0, 0),
+    val rackMapping: Map<String, Rack>
+)
+
 data class TagMapping(
     val tagId: String,
     val storeId: String,
@@ -42,11 +47,13 @@ data class TagMapping(
     val tagType: String,
     val occupancyType: String
 )
+
 data class ProductPosition(
     val productId: String,
     val positionTagId: String,
     val count: Int
 )
+
 data class Product(
     val productId: String,
     val name: String,

@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -463,6 +464,17 @@ fun ProgressDialog(isShowing: Boolean, message: String) {
                 }
             }
         }
+    }
+}
+
+private fun getDrawableByProductName(name : String) : Int{
+
+    return when(name.lowercase()){
+        "kurkure" -> R.drawable.kurkure
+        "lays" -> R.drawable.lays
+        "wafer" -> R.drawable.wafers
+        "caledar" -> R.drawable.noimage
+        else -> R.drawable.noimage
     }
 }
 
