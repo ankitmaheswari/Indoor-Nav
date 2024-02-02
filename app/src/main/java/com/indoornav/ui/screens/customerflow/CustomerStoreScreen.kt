@@ -172,7 +172,7 @@ fun CustomerStoreScreen(
                 .padding(outerPadding)
                 .fillMaxSize()
         ) {
-            StoreHeaderCard(navController, store)
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -226,6 +226,8 @@ fun CustomerStoreScreen(
 
 
             }
+
+            StoreHeaderCard(navController, store)
         }
 
     }

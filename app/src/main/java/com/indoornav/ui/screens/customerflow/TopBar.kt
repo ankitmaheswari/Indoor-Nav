@@ -25,7 +25,6 @@ fun GenericTopBar(
     Column {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(12.dp).clickable {
                     onBackButtonClick()
                 },
