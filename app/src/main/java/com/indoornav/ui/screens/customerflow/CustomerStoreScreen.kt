@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,12 +35,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -47,6 +49,7 @@ import com.indoornav.business.store.Coordinate
 import com.indoornav.business.store.FloorPlan
 import com.indoornav.business.store.Product
 import com.indoornav.business.store.Store
+import com.indoornav.model.CategoryTabData
 import com.indoornav.navigation.NavigationRoute
 import com.indoornav.util.StringUtil
 
@@ -61,6 +64,7 @@ fun CustomerStoreScreen(
     productDatabase: DatabaseReference,
     qrValue: String
 ) {
+    val context = LocalContext.current
     var qrResponse by remember {
         mutableStateOf<QRResponse?>(null)
     }
@@ -158,9 +162,7 @@ fun CustomerStoreScreen(
                 Text(text = "Choose the item to locate")
             }
             item {
-                LazyRow() {
-
-                }
+              CategoryHeaderTab()
             }
 
             items(productList.size) { item ->
@@ -177,6 +179,57 @@ fun CustomerStoreScreen(
 
         }
     }
+}
+
+@Composable
+private fun CategoryHeaderTab(){
+    val tabs = getCategoryTabList()
+    val selectedTab = tabs[0]
+    Column {
+        LazyRow(
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            tabs.map {
+                item {
+                    CategoryPillItem(
+                        currentTab = it,
+                        selectedTab = selectedTab,
+                        onOrderTabClick = {},
+                    )
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun CategoryPillItem(
+    currentTab: CategoryTabData,
+    selectedTab: CategoryTabData,
+    onOrderTabClick: (CategoryTabData) -> Unit,
+) {
+
+    val borderColor =
+        if (currentTab == selectedTab) Color(0x44A037) else Color(0xE3E3E3)
+    Text(
+        text = currentTab.categoryName,
+        color = Color.Black,
+        fontSize = 14.sp,
+        modifier = Modifier
+            .clickable { onOrderTabClick(currentTab) }
+            .border(
+                1.dp,
+                borderColor,
+                RoundedCornerShape(8.dp)
+            )
+            .background(
+                Color.White,
+                RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp),
+    )
 }
 
 @Composable
@@ -233,7 +286,8 @@ private fun Footer(onClick: () -> Unit) {
             .background(
                 color = Color.Green,
                 shape = RoundedCornerShape(8.dp)
-            ).fillMaxWidth()
+            )
+            .fillMaxWidth()
             .clickable { onClick() }
             .padding(
                 horizontal = 12.dp,
@@ -275,5 +329,16 @@ private fun StoreItemCard(product: Product, onProductSelected: (String) -> Unit)
 
         })
     }
+}
+
+private fun getCategoryTabList(): List<CategoryTabData>{
+return listOf(
+    CategoryTabData("Snacks",R.drawable.ic_store),
+    CategoryTabData("Vegies",R.drawable.ic_store),
+    CategoryTabData("Bakery",R.drawable.ic_store),
+    CategoryTabData("Meat",R.drawable.ic_store),
+    CategoryTabData("Masala",R.drawable.ic_store),
+    CategoryTabData("Bevereges",R.drawable.ic_store),
+)
 }
 
