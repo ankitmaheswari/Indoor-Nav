@@ -471,7 +471,7 @@ private fun getDrawableByProductName(name : String) : Int{
         "kurkure" -> R.drawable.kurkure
         "lays" -> R.drawable.lays
         "wafer" -> R.drawable.wafers
-        "calendar" -> R.drawable.calendar
+       // "calendar" -> R.drawable.calendar
         else -> R.drawable.noimage
     }
 }

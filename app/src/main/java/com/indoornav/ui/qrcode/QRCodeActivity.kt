@@ -113,7 +113,7 @@ class QRCodeActivity : ComponentActivity() {
 
     private fun initLicense(){
         BarcodeReader.initLicense(
-            "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ=="
+            "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAyNTc2OTY4LVRYbE5iMkpwYkdWUWNtOXEiLCJtYWluU2VydmVyVVJMIjoiaHR0cHM6Ly9tZGxzLmR5bmFtc29mdG9ubGluZS5jb20iLCJvcmdhbml6YXRpb25JRCI6IjEwMjU3Njk2OCIsInN0YW5kYnlTZXJ2ZXJVUkwiOiJodHRwczovL3NkbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsImNoZWNrQ29kZSI6MjEyODQzNTM0OH0="
         ) { isSuccess, error ->
             if (!isSuccess) {
                 error.printStackTrace()
