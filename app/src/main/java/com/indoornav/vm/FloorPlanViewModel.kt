@@ -59,10 +59,18 @@ class FloorPlanViewModel: ViewModel() {
                         destinationRow = rackRow
                         destinationColumn = rackColumn - 1
                         arrayOf(rackRow, rackColumn-1)
-                    } else {
+                    } else if (!hasShelf(rackRow, rackColumn + 1)) {
                         destinationRow = rackRow
                         destinationColumn = rackColumn + 1
                         arrayOf(rackRow, rackColumn+1)
+                    } else if (!hasShelf(rackRow - 1, rackColumn)) {
+                        destinationRow = rackRow -1
+                        destinationColumn = rackColumn
+                        arrayOf(rackRow-1, rackColumn)
+                    } else {
+                        destinationRow = rackRow +1
+                        destinationColumn = rackColumn
+                        arrayOf(rackRow+1, rackColumn)
                     }
                     val arrayList = ArrayList<ArrayList<Int>>()
                     floorPlan?.forEach {
@@ -108,11 +116,11 @@ class FloorPlanViewModel: ViewModel() {
     }
 
     fun getLabel(row: Int, column: Int): String? {
-        if (row == 2 && column == 1) {
-            return "10% Off"
-        }
-        if (row == 2 && column == 4) {
+        if (row == 3 && column == 3) {
             return "20% Off"
+        }
+        if (row == 1 && column == 2) {
+            return "15% Off"
         }
         return null
     }

@@ -113,13 +113,13 @@ fun FloorPlanScreen(
                                 return@FloorPlanLayout floorPlanViewModel.getLabel(row, column)
                             },
                             onClick = { row, column ->
-                                if (row == 2 && column == 1) {
-                                    dialogMessage = "10% Off on Kurkure"
+                                if (row == 3 && column == 3) {
+                                    dialogMessage = "20% Off on Glasses"
                                     showDialog = true
                                     popToBackStack = false
                                 }
-                                if (row == 2 && column == 4) {
-                                    dialogMessage = "20% Off on Wafer"
+                                if (row == 1 && column == 2) {
+                                    dialogMessage = "15% Off on Pens"
                                     showDialog = true
                                     popToBackStack = false
                                 }
